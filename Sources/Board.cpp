@@ -3,6 +3,7 @@
 //
 
 #include "../Headers/Board.h"
+
 Board::Board(){
     char cur = 'B';
     for(int row = 0;row <5;row++){
@@ -16,11 +17,18 @@ Board::Board(){
             else
                 cur = 'B';
             newPoint.token = nullptr;
+            board[row][col] = newPoint;
         }
     }
-
 }
-
-void Board::UpdateBoard() {
-
+//print method
+void Board::UpdateBoard(vector<Token> &tokenGreen, vector<Token> &tokenRed) { //reference of token
+    for(int i = 0; i < tokenGreen.size(); i++){
+        Token *t = &(tokenGreen.at(i));
+        board[t->getRow()][t->getColumn()].token = t;
+    }
+    for(int i = 0; i < tokenRed.size(); i++){
+        Token *t = &(tokenRed.at(i));
+        board[t->getRow()][t->getColumn()].token = t;
+    }
 }

@@ -7,12 +7,14 @@
 
 
 #include "Token.h"
-#include<Vector>
+#include <vector>
+
+using namespace std;
 
 class Board {
 public:
     Board();
-    void UpdateBoard(Vector<Token> &tokenGreen,Vector<Token> &tokenRed); //theoretically update the pos(x,y) and color associated to it
+    void UpdateBoard(vector<Token> &tokenGreen,vector<Token> &tokenRed); //theoretically update the pos(x,y) and color associated to it
 private:
     struct Point{
         int row;
@@ -20,7 +22,7 @@ private:
         char color;
         Token *token;
     };
-    Point boardP[5][9]; //creating the board points
+    Point board[5][9]; //creating the board points
 };
 
 
