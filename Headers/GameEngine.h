@@ -7,6 +7,8 @@
 
 
 class GameEngine {
+public:
+
 
 };
 
