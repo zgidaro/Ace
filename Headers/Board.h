@@ -20,6 +20,7 @@ private:
         char color;
         Token *token;
     };
+    Point boardP[5][9]; //creating the board points
 };
 
 
