@@ -13,21 +13,21 @@ using namespace std;
 class Token {
 private:
     int column;
-    char row;
+    int row;
     char colour;
 
 
 public:
     Token();
-    Token(int, char, char);
+    Token(int, int, char);
     ~Token();
 
     int getColumn();
-    char getRow();
+    int getRow();
     char getColour();
 
     void setColumn(int);
-    void setRow(char);
+    void setRow(int);
     void setColour(char);
 };
 
