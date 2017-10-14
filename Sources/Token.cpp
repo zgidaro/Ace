@@ -7,7 +7,7 @@
 Token::Token() {
     column = 0;
     row = 0;
-    colour = '';
+    colour = ' ';
 }
 
 Token::Token(int _column, int _row, char _colour) {
