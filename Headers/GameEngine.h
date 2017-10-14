@@ -7,11 +7,14 @@
 
 class GameEngine {
 public:
+    GameEngine();
     void setup();
-    void checkMove();
 
+    /* void checkMove();
+    void checkAvailable();
+    void checkPos(); */
 
-
+private:
 
 };
 

@@ -3,3 +3,10 @@
 //
 
 #include "../Headers/Board.h"
+Board::Board(){
+
+}
+
+void Board::UpdateBoard() {
+
+}

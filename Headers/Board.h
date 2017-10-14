@@ -6,8 +6,20 @@
 #define ACE_BOARD_H
 
 
-class Board {
+#include "Token.h"
+#include<Vector>
 
+class Board {
+public:
+    Board();
+    void UpdateBoard(Vector<Token> &tokenGreen,Vector<Token> &tokenRed); //theoretically update the pos(x,y) and color associated to it
+private:
+    struct Point{
+        int row;
+        int col;
+        char color;
+        Token *token;
+    };
 };
 
 
