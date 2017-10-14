@@ -7,6 +7,9 @@
 
 
 class Token {
+private:
+
+public:
 
 };
 
