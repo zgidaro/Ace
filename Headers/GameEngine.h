@@ -5,9 +5,12 @@
 #ifndef ACE_GAMEENGINE_H
 #define ACE_GAMEENGINE_H
 
-
 class GameEngine {
 public:
+    void setup();
+    void checkMove();
+
+
 
 
 };
