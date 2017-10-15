@@ -98,7 +98,7 @@ void Board::print()
     for (int j = 0; j < 5; ++j)
     {
         cout << GetCharFromInt(j) << "  ";
-        for (int i = 0; i < 9; ++i)
+        for (int i = 0; i < 9; i++)
         {
             Token * tok = board[j][i].token;
             if (tok != nullptr)
@@ -142,7 +142,7 @@ void Board::applyMove(Board::Point point, Board::Point newPoint)
     board[newPoint.row][newPoint.col].token = token;
     board[point.row][point.col].token = nullptr;
 
-//    applyAttack(point, newPoint);
+    applyAttack(point, newPoint);
 
     UpdateBoard(tokenGreen, tokenRed);
 }
@@ -169,9 +169,9 @@ void Board::applyAttack(Board::Point pointFrom, Board::Point pointTo)
 {
     Token *attacking = board[pointTo.row][pointTo.col].token;
 
-    if ((pointFrom.col == pointTo.col - 1) && board[pointTo.col+1][pointTo.row].token->getColour() !=  attacking->getColour())
+    if ((pointFrom.col == pointTo.col - 1) && board[pointTo.row][pointTo.col+1].token->getColour() != attacking->getColour())
     {
-        for (int i = pointTo.col+1; i < 5; ++i)
+        for (int i = pointTo.col+1; i < 9; i++)
         {
             if (board[pointTo.row][i].token->getColour() == attacking->getColour())
             {
@@ -179,7 +179,32 @@ void Board::applyAttack(Board::Point pointFrom, Board::Point pointTo)
             }
 
             Token *defending = board[pointTo.row][i].token;
-            defending = nullptr;
+            if (defending->getColour() == 'G')
+            {
+                for (int j = 0; j < tokenGreen.size(); j++)
+                {
+                    Token &token = tokenGreen[j];
+                    if ((token.getRow() == defending->getRow()) && (token.getColumn() == defending->getColumn()))
+                    {
+                        tokenGreen.erase(tokenGreen.begin() + j);
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                for (int j = 0; j < tokenRed.size(); j++)
+                {
+                    Token &token = tokenRed[j];
+//                    cout << token.getRow() << " " << token.getColumn() << "    " << defending->getRow() << " " << defending->getColumn() << endl;
+                    if ((token.getRow() == defending->getRow()) && (token.getColumn() == defending->getColumn()))
+                    {
+                        tokenRed.erase(tokenRed.begin() + j);
+                        break;
+                    }
+                }
+            }
+            board[pointTo.row][i].token = nullptr;
         }
 
         return;
