@@ -1,10 +1,15 @@
 #include <iostream>
+#include "../Headers/Board.h"
+#include "../Headers/Token.h"
+
 
 using namespace std;
 
 int main()
 {
-	cout << "I HATE THIS" << std::endl;
+	cout << "YAY" << std::endl;
 
+	Board board;
+	board.initializeTokens();
 	return 0;
 }
