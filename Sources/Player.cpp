@@ -16,6 +16,13 @@ char Player::getPlayerColour(){
     return playerColour;
 }
 
+bool Player::moveToken(int StratPosition, int TargetPosition) {
+	//check start position is not empty
+	//check starting position cell color
+	//check player if move is valid
+	//if move is valid , update board
+	return false;
+}
 Player::~Player(){
 
 }

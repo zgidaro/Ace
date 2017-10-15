@@ -20,6 +20,8 @@ public:
 
     void setPlayerColour(char);
     char getPlayerColour();
+
+	bool moveToken(int StartPosition,int TargetPosition);
 };
 
 

@@ -7,10 +7,10 @@ using namespace std;
 
 int main()
 {
-	cout << "YAY" << std::endl;
-	system("Pause");
+    cout << "YAY" << std::endl;
+    system("Pause");
 
-	Board board;
-	board.initializeTokens();
-	return 0;
+    Board board;
+    board.initializeTokens();
+    return 0;
 }
