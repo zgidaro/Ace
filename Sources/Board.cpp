@@ -69,7 +69,7 @@ Board::~Board(){
 
 bool Board::isSpaceEmpty(Board::Point newPoint)
 {
-    return board[newPoint.col][newPoint.row].token == nullptr;
+    return board[newPoint.row][newPoint.col].token == nullptr;
 }
 
 bool Board::isMoveValid(Board::Point point, Board::Point newPoint)
@@ -78,7 +78,7 @@ bool Board::isMoveValid(Board::Point point, Board::Point newPoint)
     if ((point.col == newPoint.col + 1 && (point.row == newPoint.row + 1 || point.row == newPoint.row - 1))
         || (point.col == newPoint.col - 1 && (point.row == newPoint.row + 1 || point.row == newPoint.row - 1)))
     {
-        return board[point.col][point.row].isBlack;
+        return board[point.row][point.col].isBlack;
     }
 
     // Check if move horizontal
@@ -126,21 +126,21 @@ void Board::print()
 const Board::Point Board::ParseString(string pos)
 {
     Point point;
-    point.col = GetIntFromChar(pos[0]);
-    point.row = pos[1] - '0';
-    point.row -= 1;
+    point.row = GetIntFromChar(pos[0]);
+    point.col = pos[1] - '0';
+    point.col -= 1;
     point.token = nullptr;
     return point;
 }
 
 void Board::applyMove(Board::Point point, Board::Point newPoint)
 {
-    Token *token = board[point.col][point.row].token;
+    Token *token = board[point.row][point.col].token;
     token->setColumn(newPoint.col);
     token->setRow(newPoint.row);
 
-    board[newPoint.col][newPoint.row].token = token;
-    board[point.col][point.row].token = nullptr;
+    board[newPoint.row][newPoint.col].token = token;
+    board[point.row][point.col].token = nullptr;
 
 //    applyAttack(point, newPoint);
 
@@ -149,24 +149,24 @@ void Board::applyMove(Board::Point point, Board::Point newPoint)
 
 bool Board::isCorrectColour(bool isGreensTurn, Board::Point point)
 {
-    return (isGreensTurn && board[point.col][point.row].token->getColour() == 'G')
-            || (!isGreensTurn && board[point.col][point.row].token->getColour() == 'R');
+    return (isGreensTurn && board[point.row][point.col].token->getColour() == 'G')
+            || (!isGreensTurn && board[point.row][point.col].token->getColour() == 'R');
 }
 
 void Board::applyAttack(Board::Point pointFrom, Board::Point pointTo)
 {
-    Token *attacking = board[pointTo.col][pointTo.row].token;
+    Token *attacking = board[pointTo.row][pointTo.col].token;
 
     if ((pointFrom.col == pointTo.col - 1) && board[pointTo.col+1][pointTo.row].token->getColour() !=  attacking->getColour())
     {
         for (int i = pointTo.col+1; i < 5; ++i)
         {
-            if (board[i][pointTo.row].token->getColour() == attacking->getColour())
+            if (board[pointTo.row][i].token->getColour() == attacking->getColour())
             {
                 break;
             }
 
-            Token *defending = board[i][pointTo.row].token;
+            Token *defending = board[pointTo.row][i].token;
             defending = nullptr;
         }
 
