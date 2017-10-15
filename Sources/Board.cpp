@@ -4,7 +4,7 @@
 
 #include "../Headers/Board.h"
 
-Board::Board(){
+Board::Board(){ //creating the black and white board
     char cur = 'B';
     for(int row = 0;row <5;row++){
         for(int col = 0; col < 9; col++){
@@ -27,7 +27,7 @@ void Board::initializeTokens(){
 
 }
 
-void Board::UpdateBoard(vector<Token> &tokenGreen, vector<Token> &tokenRed) { //reference of token
+void Board::UpdateBoard(vector<Token> &tokenGreen, vector<Token> &tokenRed) { //every time we pass it, reference the token
     for(int i = 0; i < tokenGreen.size(); i++){
         Token *t = &(tokenGreen.at(i));
         board[t->getRow()][t->getColumn()].token = t;
