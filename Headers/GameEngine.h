@@ -7,7 +7,8 @@
 
 #include "Board.h"
 #include <iostream>
-
+#include <string>
+#include <sstream>
 using namespace std;
 
 class GameEngine {
@@ -15,6 +16,7 @@ public:
     GameEngine();
     void run();
 	bool isMoveValid(Board::Point, Board::Point);
+	void announceWinner(int);
 
     /* void checkMove();
     void checkAvailable();

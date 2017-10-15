@@ -147,6 +147,18 @@ void Board::applyMove(Board::Point point, Board::Point newPoint)
     UpdateBoard(tokenGreen, tokenRed);
 }
 
+int Board::checkWinner() {
+	if (tokenRed.size()== 0) 
+	{
+		return 1;
+	}
+	if(tokenGreen.size() == 0)
+	{
+		return 2;
+	}
+	return 0;
+}
+
 bool Board::isCorrectColour(bool isGreensTurn, Board::Point point)
 {
     return (isGreensTurn && board[point.row][point.col].token->getColour() == 'G')

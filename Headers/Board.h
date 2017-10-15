@@ -29,6 +29,7 @@ public:
     bool isMoveValid(Point, Point);
 	bool isCorrectColour(bool, Point);
 	void applyMove(Point, Point);
+	int checkWinner();
 	static const int GetIntFromChar(char);
 	static const char GetCharFromInt(int);
 	static const Point ParseString(string);

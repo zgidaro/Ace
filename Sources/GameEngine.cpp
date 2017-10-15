@@ -21,7 +21,9 @@ void GameEngine::run()
 
 	board.print();
 
-	while (consecutiveNonAttackMoves < 10)
+	int winner = 0;
+
+	while (consecutiveNonAttackMoves < 10 && winner==0)
 	{
 		if (isGreensTurn)
 		{
@@ -50,14 +52,32 @@ void GameEngine::run()
 
 		board.applyMove(pointFrom, pointTo);
 
+		winner = board.checkWinner();
 		isGreensTurn = !isGreensTurn;
 //		consecutiveNonAttackMoves++;
 
 		board.print();
 	}
+
+		announceWinner(winner);
 }
 
 bool GameEngine::isMoveValid(Board::Point point, Board::Point newPoint)
 {
 	return board.isCorrectColour(isGreensTurn, point) && board.isSpaceEmpty(newPoint) && board.isMoveValid(point, newPoint);
+}
+
+void GameEngine::announceWinner(int winner) {
+	if (winner == 1)
+	{
+		cout << " Green Player Wins !" << endl;
+	}
+	else if (winner == 2)
+	{
+		cout << "Red Player Wins !" << endl;
+	}
+	else 
+	{
+		cout << "It's a Draw !" << endl;
+	}
 }
