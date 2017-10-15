@@ -8,6 +8,7 @@ using namespace std;
 int main()
 {
 	cout << "YAY" << std::endl;
+	system("Pause");
 
 	Board board;
 	board.initializeTokens();
