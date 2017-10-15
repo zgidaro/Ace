@@ -22,7 +22,10 @@ Board::Board(){
     }
 }
 
-//TODO:print method
+//TODO:print method for the Board
+void Board::initializeTokens(){
+
+}
 
 void Board::UpdateBoard(vector<Token> &tokenGreen, vector<Token> &tokenRed) { //reference of token
     for(int i = 0; i < tokenGreen.size(); i++){
@@ -33,4 +36,7 @@ void Board::UpdateBoard(vector<Token> &tokenGreen, vector<Token> &tokenRed) { //
         Token *t = &(tokenRed.at(i));
         board[t->getRow()][t->getColumn()].token = t;
     }
+}
+Board::~Board(){
+
 }

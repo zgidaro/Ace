@@ -15,9 +15,6 @@ void Player::setPlayerColour(char _playerColour){
 char Player::getPlayerColour(){
     return playerColour;
 }
-void Player::initializeTokens(){
-
-}
 
 bool Player::moveToken(int StratPosition, int TargetPosition) {
 	//check start position is not empty
