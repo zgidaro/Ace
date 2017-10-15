@@ -21,7 +21,9 @@ Board::Board(){
         }
     }
 }
-//print method
+
+//TODO:print method
+
 void Board::UpdateBoard(vector<Token> &tokenGreen, vector<Token> &tokenRed) { //reference of token
     for(int i = 0; i < tokenGreen.size(); i++){
         Token *t = &(tokenGreen.at(i));
