@@ -40,13 +40,15 @@ private:
     vector<Token> tokenRed;
 
 	void applyAttack(Point, Point);
-	void deleteGreenToken(int, int);
-	void deleteRedToken(int, int);
+	bool deleteGreenToken(int, int);
+	bool deleteRedToken(int, int);
 
 	bool applyForwardAttack(Token*, Point, Point);
 	bool applyBackwardAttack(Token*, Point, Point);
 
-	void verifyAttackAndDeleteToken(Token*, int, int);
+	bool isDiagonalMove(Point, Point);
+
+	bool verifyAttackAndDeleteToken(Token*, int, int);
 };
 
 
