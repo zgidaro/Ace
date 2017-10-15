@@ -1,16 +1,13 @@
 #include <iostream>
-#include "../Headers/Board.h"
-#include "../Headers/Token.h"
+#include "../Headers/GameEngine.h"
 
 
 using namespace std;
 
 int main()
 {
-    cout << "YAY" << std::endl;
-    system("Pause");
+	GameEngine game;
+	game.run();
 
-    Board board;
-    board.initializeTokens();
     return 0;
 }
