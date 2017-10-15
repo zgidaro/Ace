@@ -26,6 +26,8 @@ private:
         Token *token;
     };
     Point board[5][9]; //creating the board points
+    vector<Token> tokenGreen;
+    vector<Token> tokenRed;
 };
 
 

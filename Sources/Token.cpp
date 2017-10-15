@@ -23,5 +23,7 @@ void Token::setRow(int _row) {row = _row;}
 void Token::setColour(char _colour) {colour = _colour;}
 
 int Token::getColumn() {return column;}
-int Token::getRow() {return row;}
+int Token::getRow() {
+    return row;
+}
 char Token::getColour() {return colour;}
