@@ -13,21 +13,32 @@ using namespace std;
 
 class Board {
 public:
-    Board();
-    void UpdateBoard(vector<Token> &tokenGreen,vector<Token> &tokenRed); //theoretically update the pos(x,y) and color associated to it
-    void initializeTokens();
-    ~Board();
-
-private:
     struct Point{
         int row;
         int col;
-        char color;
+        bool isBlack;
         Token *token;
     };
+    Board();
+	~Board();
+    void UpdateBoard(vector<Token> &tokenGreen,vector<Token> &tokenRed); //theoretically update the pos(x,y) and color associated to it
+    void initializeTokens();
+	void print();
+
+	bool isSpaceEmpty(Point);
+    bool isMoveValid(Point, Point);
+	bool isCorrectColour(bool, Point);
+	void applyMove(Point, Point);
+	static const int GetIntFromChar(char);
+	static const char GetCharFromInt(int);
+	static const Point ParseString(string);
+
+private:
     Point board[5][9]; //creating the board points
     vector<Token> tokenGreen;
     vector<Token> tokenRed;
+
+	void applyAttack(Point, Point);
 };
 
 

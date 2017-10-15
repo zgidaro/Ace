@@ -5,17 +5,14 @@
 #include "../Headers/Board.h"
 
 Board::Board(){ //creating the black and white board
-    char cur = 'B';
+    bool isBlack = true;
     for(int row = 0;row <5;row++){
         for(int col = 0; col < 9; col++){
             Point newPoint;
             newPoint.row = row;
             newPoint.col = col;
-            newPoint.color = cur;
-            if(cur == 'B')
-                cur = 'W';
-            else
-                cur = 'B';
+            newPoint.isBlack = isBlack;
+            isBlack = !isBlack;
             newPoint.token = nullptr;
             board[row][col] = newPoint;
         }
@@ -47,10 +44,12 @@ void Board::initializeTokens(){
     }
 
     //testing to see if tokens were initialized
-    for (int i = 0; i < tokenRed.size(); i++ )
-    {
-        cout << tokenRed[i].getRow() << endl;
-    }
+//    for (int i = 0; i < tokenRed.size(); i++ )
+//    {
+//        cout << tokenRed[i].getRow() << endl;
+//    }
+
+    UpdateBoard(tokenGreen, tokenRed);
 
 }
 
@@ -66,4 +65,149 @@ void Board::UpdateBoard(vector<Token> &tokenGreen, vector<Token> &tokenRed) { //
 }
 Board::~Board(){
 
+}
+
+bool Board::isSpaceEmpty(Board::Point newPoint)
+{
+    return board[newPoint.row][newPoint.col].token == nullptr;
+}
+
+bool Board::isMoveValid(Board::Point point, Board::Point newPoint)
+{
+    // Check if move is in diagonal and return true if the space is black
+    if ((point.col == newPoint.col + 1 && (point.row == newPoint.row + 1 || point.row == newPoint.row - 1))
+        || (point.col == newPoint.col - 1 && (point.row == newPoint.row + 1 || point.row == newPoint.row - 1)))
+    {
+        return board[point.row][point.col].isBlack;
+    }
+
+    // Check if move horizontal
+    if (point.col == newPoint.col + 1 || point.col == newPoint.col - 1)
+    {
+        return true;
+    }
+
+    // Check if move is vertical
+    return point.row == newPoint.row + 1 || point.row == newPoint.row - 1;
+
+}
+
+void Board::print()
+{
+    cout << "   1  2  3  4  5  6  7  8  9" << endl;
+    for (int j = 0; j < 5; ++j)
+    {
+        cout << GetCharFromInt(j) << "  ";
+        for (int i = 0; i < 9; ++i)
+        {
+            Token * tok = board[j][i].token;
+            if (tok != nullptr)
+            {
+                cout << board[j][i].token->getColour();
+            }
+            else
+            {
+                cout << " ";
+            }
+
+            if (board[j][i].isBlack)
+            {
+                cout << "\' ";
+            }
+            else
+            {
+                cout << "  ";
+            }
+        }
+        cout << endl;
+    }
+}
+
+const Board::Point Board::ParseString(string pos)
+{
+    Point point;
+    point.row = GetIntFromChar(pos[0]);
+    point.col = pos[1] - '0';
+    point.col -= 1;
+    point.token = nullptr;
+    return point;
+}
+
+void Board::applyMove(Board::Point point, Board::Point newPoint)
+{
+    Token *token = board[point.row][point.col].token;
+    token->setColumn(newPoint.col);
+    token->setRow(newPoint.row);
+
+    board[newPoint.row][newPoint.col].token = token;
+    board[point.row][point.col].token = nullptr;
+
+//    applyAttack(point, newPoint);
+
+    UpdateBoard(tokenGreen, tokenRed);
+}
+
+bool Board::isCorrectColour(bool isGreensTurn, Board::Point point)
+{
+    return (isGreensTurn && board[point.row][point.col].token->getColour() == 'G')
+            || (!isGreensTurn && board[point.row][point.col].token->getColour() == 'R');
+}
+
+void Board::applyAttack(Board::Point pointFrom, Board::Point pointTo)
+{
+    Token *attacking = board[pointTo.row][pointTo.col].token;
+
+    if ((pointFrom.col == pointTo.col - 1) && board[pointTo.col+1][pointTo.row].token->getColour() !=  attacking->getColour())
+    {
+        for (int i = pointTo.col+1; i < 5; ++i)
+        {
+            if (board[pointTo.row][i].token->getColour() == attacking->getColour())
+            {
+                break;
+            }
+
+            Token *defending = board[pointTo.row][i].token;
+            defending = nullptr;
+        }
+
+        return;
+    }
+}
+
+const int Board::GetIntFromChar(char letter)
+{
+    switch (letter)
+    {
+        case 'A':
+            return 0;
+        case 'B':
+            return 1;
+        case 'C':
+            return 2;
+        case 'D':
+            return 3;
+        case 'E':
+            return 4;
+        default:
+            return -1;
+    }
+}
+
+const char Board::GetCharFromInt(int number)
+{
+    switch (number)
+    {
+        case 0:
+            return 'A';
+        case 1:
+            return 'B';
+        case 2:
+            return 'C';
+        case 3:
+            return 'D';
+        case 4:
+            return 'E';
+        default:
+            return 'Z';
+    }
 }
