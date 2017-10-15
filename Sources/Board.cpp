@@ -56,11 +56,13 @@ void Board::initializeTokens(){
 void Board::UpdateBoard(vector<Token> &tokenGreen, vector<Token> &tokenRed) { //every time we pass it, reference the token
     for(int i = 0; i < tokenGreen.size(); i++){
         Token *t = &(tokenGreen.at(i));
-        board[t->getRow()][t->getColumn()].token = t;
+		if (t != nullptr)
+        	board[t->getRow()][t->getColumn()].token = t;
     }
     for(int i = 0; i < tokenRed.size(); i++){
         Token *t = &(tokenRed.at(i));
-        board[t->getRow()][t->getColumn()].token = t;
+		if (t != nullptr)
+        	board[t->getRow()][t->getColumn()].token = t;
     }
 }
 Board::~Board(){
@@ -94,11 +96,11 @@ bool Board::isMoveValid(Board::Point point, Board::Point newPoint)
 
 void Board::print()
 {
-    cout << "   1  2  3  4  5  6  7  8  9" << endl;
+    cout << "\e[1m   1  2  3  4  5  6  7  8  9\e[0m" << endl;
     for (int j = 0; j < 5; ++j)
     {
-        cout << GetCharFromInt(j) << "  ";
-        for (int i = 0; i < 9; ++i)
+        cout << "\e[1m" << GetCharFromInt(j) << "\e[0m  ";
+        for (int i = 0; i < 9; i++)
         {
             Token * tok = board[j][i].token;
             if (tok != nullptr)
@@ -142,7 +144,7 @@ void Board::applyMove(Board::Point point, Board::Point newPoint)
     board[newPoint.row][newPoint.col].token = token;
     board[point.row][point.col].token = nullptr;
 
-//    applyAttack(point, newPoint);
+    applyAttack(point, newPoint);
 
     UpdateBoard(tokenGreen, tokenRed);
 }
@@ -169,21 +171,164 @@ void Board::applyAttack(Board::Point pointFrom, Board::Point pointTo)
 {
     Token *attacking = board[pointTo.row][pointTo.col].token;
 
-    if ((pointFrom.col == pointTo.col - 1) && board[pointTo.col+1][pointTo.row].token->getColour() !=  attacking->getColour())
-    {
-        for (int i = pointTo.col+1; i < 5; ++i)
-        {
-            if (board[pointTo.row][i].token->getColour() == attacking->getColour())
-            {
-                break;
-            }
+	if (applyForwardAttack(attacking, pointFrom, pointTo))
+		return;
 
-            Token *defending = board[pointTo.row][i].token;
-            defending = nullptr;
-        }
+	if (applyBackwardAttack(attacking, pointFrom, pointTo))
+		return;
 
-        return;
-    }
+}
+
+bool Board::applyForwardAttack(Token * attacking, Board::Point pointFrom, Board::Point pointTo)
+{
+	// Forward attack to the right
+	Token * defending = board[pointTo.row][pointTo.col+1].token;
+	if ((pointFrom.col == pointTo.col - 1) && defending != nullptr && defending->getColour() != attacking->getColour())
+	{
+		for (int i = pointTo.col+1; i < 9; i++)
+		{
+			verifyAttackAndDeleteToken(attacking, pointTo.row, i);
+		}
+
+		return true;
+	}
+
+	// Forward attack to the left
+	defending = board[pointTo.row][pointTo.col-1].token;
+	if ((pointFrom.col == pointTo.col + 1) && defending != nullptr && defending->getColour() != attacking->getColour())
+	{
+		for (int i = pointTo.col-1; i >= 0; i--)
+		{
+			verifyAttackAndDeleteToken(attacking, pointTo.row, i);
+		}
+
+		return true;
+	}
+
+	// Forward attack up
+	defending = board[pointTo.row-1][pointTo.col].token;
+	if ((pointFrom.row == pointTo.row + 1) && defending != nullptr && defending->getColour() != attacking->getColour())
+	{
+		for (int i = pointTo.row-1; i >= 0; i--)
+		{
+			verifyAttackAndDeleteToken(attacking, i, pointTo.col);
+		}
+
+		return true;
+	}
+
+	// Forward attack down
+	defending = board[pointTo.row+1][pointTo.col].token;
+	if ((pointFrom.row == pointTo.row - 1) && defending != nullptr && defending->getColour() != attacking->getColour())
+	{
+		for (int i = pointTo.row+1; i < 5; i++)
+		{
+			verifyAttackAndDeleteToken(attacking, i, pointTo.col);
+		}
+
+		return true;
+	}
+
+	return false;
+}
+
+bool Board::applyBackwardAttack(Token * attacking, Board::Point pointFrom, Board::Point pointTo)
+{
+	// Backward attack to the right
+	Token * defending = board[pointTo.row][pointTo.col-2].token;
+	if ((pointFrom.col == pointTo.col - 1) && defending != nullptr && defending->getColour() != attacking->getColour())
+	{
+		for (int i = pointTo.col-2; i >= 0; i--)
+		{
+			verifyAttackAndDeleteToken(attacking, pointTo.row, i);
+		}
+
+		return true;
+	}
+
+	// Backward attack to the left
+	defending = board[pointTo.row][pointTo.col+2].token;
+	if ((pointFrom.col == pointTo.col + 1) && defending != nullptr && defending->getColour() != attacking->getColour())
+	{
+		for (int i = pointTo.col+2; i < 9; i++)
+		{
+			verifyAttackAndDeleteToken(attacking, pointTo.row, i);
+		}
+
+		return true;
+	}
+
+	// Backward attack up
+	defending = board[pointTo.row-2][pointTo.col].token;
+	if ((pointFrom.row == pointTo.row + 1) && defending != nullptr && defending->getColour() != attacking->getColour())
+	{
+		for (int i = pointTo.row-2; i >= 0; i--)
+		{
+			verifyAttackAndDeleteToken(attacking, i, pointTo.col);
+		}
+
+		return true;
+	}
+
+	// Backward attack down
+	defending = board[pointTo.row+1][pointTo.col].token;
+	if ((pointFrom.row == pointTo.row - 1) && defending != nullptr && defending->getColour() != attacking->getColour())
+	{
+		for (int i = pointTo.row+2; i < 5; i++)
+		{
+			verifyAttackAndDeleteToken(attacking, i, pointTo.col);
+		}
+
+		return true;
+	}
+
+	return false;
+}
+
+void Board::verifyAttackAndDeleteToken(Token * attacking, int row, int col)
+{
+	Token * defending = board[row][col].token;
+	if (defending == nullptr || defending->getColour() == attacking->getColour())
+	{
+		return;
+	}
+
+	if (defending->getColour() == 'G')
+	{
+		board[row][col].token = nullptr;
+		deleteGreenToken(row, col);
+	}
+	else
+	{
+		board[row][col].token = nullptr;
+		deleteRedToken(row, col);
+	}
+}
+
+void Board::deleteGreenToken(int row, int col)
+{
+	for (int j = 0; j < tokenGreen.size(); j++)
+	{
+		Token &token = tokenGreen[j];
+		if ((token.getRow() == row) && (token.getColumn() == col))
+		{
+			tokenGreen.erase(tokenGreen.begin() + j);
+			break;
+		}
+	}
+}
+
+void Board::deleteRedToken(int row, int col)
+{
+	for (int j = 0; j < tokenRed.size(); j++)
+	{
+		Token &token = tokenRed[j];
+		if ((token.getRow() == row) && (token.getColumn() == col))
+		{
+			tokenRed.erase(tokenRed.begin() + j);
+			break;
+		}
+	}
 }
 
 const int Board::GetIntFromChar(char letter)
