@@ -17,7 +17,7 @@ public:
     void run();
 	bool isMoveValid(Board::Point, Board::Point);
 	void announceWinner(int);
-
+	bool checkPointBounds(Board::Point);
     /* void checkMove();
     void checkAvailable();
     void checkPos(); */

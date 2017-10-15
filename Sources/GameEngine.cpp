@@ -42,6 +42,7 @@ void GameEngine::run()
 		Board::Point pointFrom = Board::ParseString(moveFrom);
 		Board::Point pointTo = Board::ParseString(moveTo);
 
+		
 		while (!isMoveValid(pointFrom, pointTo))
 		{
 			cout << "Sorry, that move is invalid. Please enter another move: ";
@@ -64,10 +65,17 @@ void GameEngine::run()
 
 bool GameEngine::isMoveValid(Board::Point point, Board::Point newPoint)
 {
-	return board.isCorrectColour(isGreensTurn, point) && board.isSpaceEmpty(newPoint) && board.isMoveValid(point, newPoint);
+	if (checkPointBounds(point) && checkPointBounds(newPoint)) {
+		return board.isCorrectColour(isGreensTurn, point) && board.isSpaceEmpty(newPoint) && board.isMoveValid(point, newPoint);
+	}
+	else {
+		cout << "please enter a move within the board bounds" << endl;
+		return false;
+	}
 }
 
-void GameEngine::announceWinner(int winner) {
+void GameEngine::announceWinner(int winner) 
+{
 	if (winner == 1)
 	{
 		cout << " Green Player Wins !" << endl;
@@ -80,4 +88,10 @@ void GameEngine::announceWinner(int winner) {
 	{
 		cout << "It's a Draw !" << endl;
 	}
+
+}
+
+bool GameEngine::checkPointBounds(Board::Point p) 
+{
+	return(p.row > -1 && p.row < 5 && p.col > -1 && p.col < 9);
 }
