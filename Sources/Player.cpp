@@ -3,3 +3,22 @@
 //
 
 #include "../Headers/Player.h"
+Player::Player(){
+
+}
+Player::Player(char playerColour){
+    playerColour = ' ';
+}
+Player::setPlayerColour(char _playerColour){
+    playerColour = _playerColour;
+}
+char Player::getPlayerColour(){
+    return playerColour;
+}
+void Player::initializeTokens(){
+
+}
+
+Player::~Player(){
+
+}
