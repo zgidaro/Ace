@@ -9,7 +9,7 @@ Player::Player(){
 Player::Player(char playerColour){
     playerColour = ' ';
 }
-Player::setPlayerColour(char _playerColour){
+void Player::setPlayerColour(char _playerColour){
     playerColour = _playerColour;
 }
 char Player::getPlayerColour(){
