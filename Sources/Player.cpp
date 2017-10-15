@@ -15,9 +15,6 @@ void Player::setPlayerColour(char _playerColour){
 char Player::getPlayerColour(){
     return playerColour;
 }
-void Player::initializeTokens(){
-
-}
 
 Player::~Player(){
 

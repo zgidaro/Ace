@@ -18,8 +18,6 @@ public:
     Player(char);
     ~Player();
 
-    void initializeTokens();
-
     void setPlayerColour(char);
     char getPlayerColour();
 };

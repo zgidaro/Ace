@@ -15,6 +15,9 @@ class Board {
 public:
     Board();
     void UpdateBoard(vector<Token> &tokenGreen,vector<Token> &tokenRed); //theoretically update the pos(x,y) and color associated to it
+    void initializeTokens();
+    ~Board();
+
 private:
     struct Point{
         int row;
