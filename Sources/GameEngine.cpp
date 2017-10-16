@@ -65,6 +65,11 @@ void GameEngine::run()
 
 bool GameEngine::isMoveValid(Board::Point point, Board::Point newPoint)
 {
+	if (point.row == newPoint.row && point.col == newPoint.col)
+	{
+		return false;
+	}
+
 	if (checkPointBounds(point) && checkPointBounds(newPoint)) {
 		return board.isCorrectColour(isGreensTurn, point) && board.isSpaceEmpty(newPoint) && board.isMoveValid(point, newPoint);
 	}
