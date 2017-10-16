@@ -51,11 +51,13 @@ void GameEngine::run()
 			pointTo = Board::ParseString(moveTo);
 		}
 
-		board.applyMove(pointFrom, pointTo);
+		if (board.applyMove(pointFrom, pointTo))
+			consecutiveNonAttackMoves = 0;
+		else
+			consecutiveNonAttackMoves++;
 
 		winner = board.checkWinner();
 		isGreensTurn = !isGreensTurn;
-//		consecutiveNonAttackMoves++;
 
 		board.print();
 	}

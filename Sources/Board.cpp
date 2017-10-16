@@ -135,8 +135,9 @@ const Board::Point Board::ParseString(string pos)
     return point;
 }
 
-void Board::applyMove(Board::Point point, Board::Point newPoint)
+bool Board::applyMove(Board::Point point, Board::Point newPoint)
 {
+	bool attacked = false;
     Token *token = board[point.row][point.col].token;
     token->setColumn(newPoint.col);
     token->setRow(newPoint.row);
@@ -144,9 +145,11 @@ void Board::applyMove(Board::Point point, Board::Point newPoint)
     board[newPoint.row][newPoint.col].token = token;
     board[point.row][point.col].token = nullptr;
 
-    applyAttack(point, newPoint);
+    attacked = applyAttack(point, newPoint);
 
     UpdateBoard(tokenGreen, tokenRed);
+
+	return attacked;
 }
 
 int Board::checkWinner() {
@@ -167,16 +170,11 @@ bool Board::isCorrectColour(bool isGreensTurn, Board::Point point)
             || (!isGreensTurn && board[point.row][point.col].token->getColour() == 'R');
 }
 
-void Board::applyAttack(Board::Point pointFrom, Board::Point pointTo)
+bool Board::applyAttack(Board::Point pointFrom, Board::Point pointTo)
 {
     Token *attacking = board[pointTo.row][pointTo.col].token;
 
-	if (applyForwardAttack(attacking, pointFrom, pointTo))
-		return;
-
-	if (applyBackwardAttack(attacking, pointFrom, pointTo))
-		return;
-
+	return applyForwardAttack(attacking, pointFrom, pointTo) || applyBackwardAttack(attacking, pointFrom, pointTo);
 }
 
 bool Board::isDiagonalMove(Board::Point point, Board::Point newPoint)

@@ -28,7 +28,7 @@ public:
 	bool isSpaceEmpty(Point);
     bool isMoveValid(Point, Point);
 	bool isCorrectColour(bool, Point);
-	void applyMove(Point, Point);
+	bool applyMove(Point, Point);
 	int checkWinner();
 	static const int GetIntFromChar(char);
 	static const char GetCharFromInt(int);
@@ -39,7 +39,7 @@ private:
     vector<Token> tokenGreen;
     vector<Token> tokenRed;
 
-	void applyAttack(Point, Point);
+	bool applyAttack(Point, Point);
 	bool deleteGreenToken(int, int);
 	bool deleteRedToken(int, int);
 
