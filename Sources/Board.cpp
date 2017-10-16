@@ -202,7 +202,6 @@ bool Board::applyForwardAttack(Token * attacking, Board::Point pointFrom, Board:
 		if ((pointFrom.row == pointTo.row + 1) && (pointFrom.col == pointTo.col - 1) && defending != nullptr
 			&& defending->getColour() != attacking->getColour())
 		{
-			cout << "Forward attack diagonal up right" << endl;
 			int i = pointTo.row - 1;
 			int j = pointTo.col + 1;
 
@@ -226,7 +225,6 @@ bool Board::applyForwardAttack(Token * attacking, Board::Point pointFrom, Board:
 		if ((pointFrom.row == pointTo.row + 1) && (pointFrom.col == pointTo.col + 1) && defending != nullptr
 			&& defending->getColour() != attacking->getColour())
 		{
-			cout << "Forward attack diagonal up left" << endl;
 			int i = pointTo.row - 1;
 			int j = pointTo.col - 1;
 
@@ -250,7 +248,6 @@ bool Board::applyForwardAttack(Token * attacking, Board::Point pointFrom, Board:
 		if ((pointFrom.row == pointTo.row - 1) && (pointFrom.col == pointTo.col + 1) && defending != nullptr
 			&& defending->getColour() != attacking->getColour())
 		{
-			cout << "Forward attack diagonal down left" << endl;
 			int i = pointTo.row + 1;
 			int j = pointTo.col - 1;
 
@@ -274,7 +271,6 @@ bool Board::applyForwardAttack(Token * attacking, Board::Point pointFrom, Board:
 		if ((pointFrom.row == pointTo.row - 1) && (pointFrom.col == pointTo.col - 1) && defending != nullptr
 			&& defending->getColour() != attacking->getColour())
 		{
-			cout << "Forward attack diagonal down right" << endl;
 			int i = pointTo.row + 1;
 			int j = pointTo.col + 1;
 
@@ -299,7 +295,6 @@ bool Board::applyForwardAttack(Token * attacking, Board::Point pointFrom, Board:
 		defending = board[pointTo.row][pointTo.col+1].token;
 		if ((pointFrom.col == pointTo.col - 1) && defending != nullptr && defending->getColour() != attacking->getColour())
 		{
-			cout << "Forward attack to the right" << endl;
 			for (int i = pointTo.col+1; i < 9; i++)
 			{
 				if (verifyAttackAndDeleteToken(attacking, pointTo.row, i))
@@ -316,7 +311,6 @@ bool Board::applyForwardAttack(Token * attacking, Board::Point pointFrom, Board:
 		defending = board[pointTo.row][pointTo.col-1].token;
 		if ((pointFrom.col == pointTo.col + 1) && defending != nullptr && defending->getColour() != attacking->getColour())
 		{
-			cout << "Forward attack to the left" << endl;
 			for (int i = pointTo.col-1; i >= 0; i--)
 			{
 				if (verifyAttackAndDeleteToken(attacking, pointTo.row, i))
@@ -333,7 +327,6 @@ bool Board::applyForwardAttack(Token * attacking, Board::Point pointFrom, Board:
 		defending = board[pointTo.row-1][pointTo.col].token;
 		if ((pointFrom.row == pointTo.row + 1) && defending != nullptr && defending->getColour() != attacking->getColour())
 		{
-			cout << "Forward attack up" << endl;
 			for (int i = pointTo.row-1; i >= 0; i--)
 			{
 				if (verifyAttackAndDeleteToken(attacking, i, pointTo.col))
@@ -350,7 +343,6 @@ bool Board::applyForwardAttack(Token * attacking, Board::Point pointFrom, Board:
 		defending = board[pointTo.row+1][pointTo.col].token;
 		if ((pointFrom.row == pointTo.row - 1) && defending != nullptr && defending->getColour() != attacking->getColour())
 		{
-			cout << "Forward attack down" << endl;
 			for (int i = pointTo.row+1; i < 5; i++)
 			{
 				if (verifyAttackAndDeleteToken(attacking, i, pointTo.col))
@@ -379,9 +371,8 @@ bool Board::applyBackwardAttack(Token * attacking, Board::Point pointFrom, Board
 		if ((pointFrom.row == pointTo.row + 1) && (pointFrom.col == pointTo.col - 1) && defending != nullptr
 			&& defending->getColour() != attacking->getColour())
 		{
-			cout << "Backward attack diagonal up right" << endl;
-			int i = pointFrom.row + 1; // increment this
-			int j = pointFrom.col - 1; // decrement this
+			int i = pointFrom.row + 1;
+			int j = pointFrom.col - 1;
 
 			while (i < 5 && j >= 0)
 			{
@@ -403,9 +394,8 @@ bool Board::applyBackwardAttack(Token * attacking, Board::Point pointFrom, Board
 		if ((pointFrom.row == pointTo.row + 1) && (pointFrom.col == pointTo.col + 1) && defending != nullptr
 			&& defending->getColour() != attacking->getColour())
 		{
-			cout << "Backward attack diagonal up left" << endl;
-			int i = pointFrom.row + 1; // increment this
-			int j = pointFrom.col + 1; // increment this
+			int i = pointFrom.row + 1;
+			int j = pointFrom.col + 1;
 
 			while (i < 5 && j < 9)
 			{
@@ -427,9 +417,8 @@ bool Board::applyBackwardAttack(Token * attacking, Board::Point pointFrom, Board
 		if ((pointFrom.row == pointTo.row - 1) && (pointFrom.col == pointTo.col + 1) && defending != nullptr
 			&& defending->getColour() != attacking->getColour())
 		{
-			cout << "Backward attack diagonal down left" << endl;
-			int i = pointFrom.row - 1; // decrement this
-			int j = pointFrom.col + 1; // increment this
+			int i = pointFrom.row - 1;
+			int j = pointFrom.col + 1;
 
 			while (i >= 0 && j < 9)
 			{
@@ -451,9 +440,8 @@ bool Board::applyBackwardAttack(Token * attacking, Board::Point pointFrom, Board
 		if ((pointFrom.row == pointTo.row - 1) && (pointFrom.col == pointTo.col - 1) && defending != nullptr
 			&& defending->getColour() != attacking->getColour())
 		{
-			cout << "Backward attack diagonal down right" << endl;
-			int i = pointFrom.row - 1; // decrement this
-			int j = pointFrom.col - 1; // decrement this
+			int i = pointFrom.row - 1;
+			int j = pointFrom.col - 1;
 
 			while (i >= 0 && j >= 0)
 			{
@@ -476,7 +464,6 @@ bool Board::applyBackwardAttack(Token * attacking, Board::Point pointFrom, Board
 		defending = board[pointFrom.row][pointFrom.col-1].token;
 		if ((pointFrom.col == pointTo.col - 1) && defending != nullptr && defending->getColour() != attacking->getColour())
 		{
-			cout << "Backward attack to the right" << endl;
 			for (int i = pointFrom.col-1; i >= 0; i--)
 			{
 				if (verifyAttackAndDeleteToken(attacking, pointFrom.row, i))
@@ -493,7 +480,6 @@ bool Board::applyBackwardAttack(Token * attacking, Board::Point pointFrom, Board
 		defending = board[pointFrom.row][pointFrom.col+1].token;
 		if ((pointFrom.col == pointTo.col + 1) && defending != nullptr && defending->getColour() != attacking->getColour())
 		{
-			cout << "Backward attack to the left" << endl;
 			for (int i = pointFrom.col+1; i < 9; i++)
 			{
 				if (verifyAttackAndDeleteToken(attacking, pointFrom.row, i))
@@ -506,12 +492,11 @@ bool Board::applyBackwardAttack(Token * attacking, Board::Point pointFrom, Board
 				return true;
 		}
 
-		// Backward attack down
-		defending = board[pointFrom.row-1][pointFrom.col].token;
+		// Backward attack up
+		defending = board[pointFrom.row+1][pointFrom.col].token;
 		if ((pointFrom.row == pointTo.row + 1) && defending != nullptr && defending->getColour() != attacking->getColour())
 		{
-			cout << "Backward down" << endl;
-			for (int i = pointFrom.row-1; i >= 0; i--)
+			for (int i = pointFrom.row+1; i < 5; i++)
 			{
 				if (verifyAttackAndDeleteToken(attacking, i, pointFrom.col))
 					deleted++;
@@ -523,12 +508,11 @@ bool Board::applyBackwardAttack(Token * attacking, Board::Point pointFrom, Board
 				return true;
 		}
 
-		// Backward attack up
-		defending = board[pointFrom.row+1][pointFrom.col].token;
+		// Backward attack down
+		defending = board[pointFrom.row-1][pointFrom.col].token;
 		if ((pointFrom.row == pointTo.row - 1) && defending != nullptr && defending->getColour() != attacking->getColour())
 		{
-			cout << "Backward attack up" << endl;
-			for (int i = pointFrom.row+1; i < 5; i++)
+			for (int i = pointFrom.row-1; i >= 0; i--)
 			{
 				if (verifyAttackAndDeleteToken(attacking, i, pointFrom.col))
 					deleted++;
