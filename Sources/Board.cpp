@@ -96,10 +96,10 @@ bool Board::isMoveValid(Board::Point point, Board::Point newPoint)
 
 void Board::print()
 {
-    cout << "\e[1m   1  2  3  4  5  6  7  8  9\e[0m" << endl;
+    cout << "   1  2  3  4  5  6  7  8  9" << endl;
     for (int j = 0; j < 5; ++j)
     {
-        cout << "\e[1m" << GetCharFromInt(j) << "\e[0m  ";
+        cout << GetCharFromInt(j) << "  ";
         for (int i = 0; i < 9; i++)
         {
             Token * tok = board[j][i].token;
