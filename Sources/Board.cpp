@@ -188,6 +188,16 @@ bool Board::isDiagonalMove(Board::Point point, Board::Point newPoint)
 	return false;
 }
 
+bool Board::isPointValid(int row, int col)
+{
+	return row >= 0 && col >= 0;
+}
+
+bool Board::isAttacking(Token * attacking, Token * defending)
+{
+	return defending != nullptr && defending->getColour() != attacking->getColour();
+}
+
 bool Board::applyForwardAttack(Token * attacking, Board::Point pointFrom, Board::Point pointTo)
 {
 	int deleted = 0;
@@ -196,161 +206,185 @@ bool Board::applyForwardAttack(Token * attacking, Board::Point pointFrom, Board:
 	if (isDiagonalMove(pointFrom, pointTo))
 	{
 		// Forward attack diagonal up right
-		defending = board[pointTo.row-1][pointTo.col+1].token;
-		if ((pointFrom.row == pointTo.row + 1) && (pointFrom.col == pointTo.col - 1) && defending != nullptr
-			&& defending->getColour() != attacking->getColour())
+		if ((pointFrom.row == pointTo.row + 1) && (pointFrom.col == pointTo.col - 1)
+				&& isPointValid(pointTo.row-1, pointTo.col+1))
 		{
-			int i = pointTo.row - 1;
-			int j = pointTo.col + 1;
-
-			while (i >= 0 && j < 9)
+			defending = board[pointTo.row-1][pointTo.col+1].token;
+			if (isAttacking(attacking, defending))
 			{
-				if (verifyAttackAndDeleteToken(attacking, i, j))
-					deleted++;
-				else
-					break;
+				int i = pointTo.row - 1;
+				int j = pointTo.col + 1;
 
-				i--;
-				j++;
+				while (i >= 0 && j < 9)
+				{
+					if (verifyAttackAndDeleteToken(attacking, i, j))
+						deleted++;
+					else
+						break;
+
+					i--;
+					j++;
+				}
+
+				if (deleted > 0)
+					return true;
 			}
-
-			if (deleted > 0)
-				return true;
 		}
 
 		// Forward attack diagonal up left
-		defending = board[pointTo.row-1][pointTo.col-1].token;
-		if ((pointFrom.row == pointTo.row + 1) && (pointFrom.col == pointTo.col + 1) && defending != nullptr
-			&& defending->getColour() != attacking->getColour())
+		if ((pointFrom.row == pointTo.row + 1) && (pointFrom.col == pointTo.col + 1)
+				&& isPointValid(pointTo.row-1, pointTo.col-1))
 		{
-			int i = pointTo.row - 1;
-			int j = pointTo.col - 1;
-
-			while (i >= 0 && j >= 0)
+			defending = board[pointTo.row-1][pointTo.col-1].token;
+			if (isAttacking(attacking, defending))
 			{
-				if (verifyAttackAndDeleteToken(attacking, i, j))
-					deleted++;
-				else
-					break;
+				int i = pointTo.row - 1;
+				int j = pointTo.col - 1;
 
-				i--;
-				j--;
+				while (i >= 0 && j >= 0)
+				{
+					if (verifyAttackAndDeleteToken(attacking, i, j))
+						deleted++;
+					else
+						break;
+
+					i--;
+					j--;
+				}
+
+				if (deleted > 0)
+					return true;
 			}
-
-			if (deleted > 0)
-				return true;
 		}
 
 		// Forward attack diagonal down left
-		defending = board[pointTo.row+1][pointTo.col-1].token;
-		if ((pointFrom.row == pointTo.row - 1) && (pointFrom.col == pointTo.col + 1) && defending != nullptr
-			&& defending->getColour() != attacking->getColour())
+		if ((pointFrom.row == pointTo.row - 1) && (pointFrom.col == pointTo.col + 1)
+				&& isPointValid(pointTo.row+1, pointTo.col-1))
 		{
-			int i = pointTo.row + 1;
-			int j = pointTo.col - 1;
-
-			while (i < 5 && j >= 0)
+			defending = board[pointTo.row+1][pointTo.col-1].token;
+			if (isAttacking(attacking, defending))
 			{
-				if (verifyAttackAndDeleteToken(attacking, i, j))
-					deleted++;
-				else
-					break;
+				int i = pointTo.row + 1;
+				int j = pointTo.col - 1;
 
-				i++;
-				j--;
+				while (i < 5 && j >= 0)
+				{
+					if (verifyAttackAndDeleteToken(attacking, i, j))
+						deleted++;
+					else
+						break;
+
+					i++;
+					j--;
+				}
+
+				if (deleted > 0)
+					return true;
 			}
-
-			if (deleted > 0)
-				return true;
 		}
 
 		// Forward attack diagonal down right
-		defending = board[pointTo.row+1][pointTo.col+1].token;
-		if ((pointFrom.row == pointTo.row - 1) && (pointFrom.col == pointTo.col - 1) && defending != nullptr
-			&& defending->getColour() != attacking->getColour())
+		if ((pointFrom.row == pointTo.row - 1) && (pointFrom.col == pointTo.col - 1)
+			&& isPointValid(pointTo.row+1, pointTo.col+1))
 		{
-			int i = pointTo.row + 1;
-			int j = pointTo.col + 1;
-
-			while (i < 5 && j < 9)
+			defending = board[pointTo.row+1][pointTo.col+1].token;
+			if (isAttacking(attacking, defending))
 			{
-				if (verifyAttackAndDeleteToken(attacking, i, j))
-					deleted++;
-				else
-					break;
+				int i = pointTo.row + 1;
+				int j = pointTo.col + 1;
 
-				i++;
-				j++;
+				while (i < 5 && j < 9)
+				{
+					if (verifyAttackAndDeleteToken(attacking, i, j))
+						deleted++;
+					else
+						break;
+
+					i++;
+					j++;
+				}
+
+				if (deleted > 0)
+					return true;
 			}
-
-			if (deleted > 0)
-				return true;
 		}
 	}
 	else
 	{
 		// Forward attack to the right
-		defending = board[pointTo.row][pointTo.col+1].token;
-		if ((pointFrom.col == pointTo.col - 1) && defending != nullptr && defending->getColour() != attacking->getColour())
+		if ((pointFrom.col == pointTo.col - 1) && isPointValid(pointTo.row, pointTo.col+1))
 		{
-			for (int i = pointTo.col+1; i < 9; i++)
+			defending = board[pointTo.row][pointTo.col+1].token;
+			if (isAttacking(attacking, defending))
 			{
-				if (verifyAttackAndDeleteToken(attacking, pointTo.row, i))
-					deleted++;
-				else
-					break;
-			}
+				for (int i = pointTo.col + 1; i < 9; i++)
+				{
+					if (verifyAttackAndDeleteToken(attacking, pointTo.row, i))
+						deleted++;
+					else
+						break;
+				}
 
-			if (deleted > 0)
-				return true;
+				if (deleted > 0)
+					return true;
+			}
 		}
 
 		// Forward attack to the left
-		defending = board[pointTo.row][pointTo.col-1].token;
-		if ((pointFrom.col == pointTo.col + 1) && defending != nullptr && defending->getColour() != attacking->getColour())
+		if ((pointFrom.col == pointTo.col + 1) && isPointValid(pointTo.row, pointTo.col-1))
 		{
-			for (int i = pointTo.col-1; i >= 0; i--)
+			defending = board[pointTo.row][pointTo.col-1].token;
+			if (isAttacking(attacking, defending))
 			{
-				if (verifyAttackAndDeleteToken(attacking, pointTo.row, i))
-					deleted++;
-				else
-					break;
-			}
+				for (int i = pointTo.col - 1; i >= 0; i--)
+				{
+					if (verifyAttackAndDeleteToken(attacking, pointTo.row, i))
+						deleted++;
+					else
+						break;
+				}
 
-			if (deleted > 0)
-				return true;
+				if (deleted > 0)
+					return true;
+			}
 		}
 
 		// Forward attack up
-		defending = board[pointTo.row-1][pointTo.col].token;
-		if ((pointFrom.row == pointTo.row + 1) && defending != nullptr && defending->getColour() != attacking->getColour())
+		if ((pointFrom.row == pointTo.row + 1) && isPointValid(pointTo.row-1, pointTo.col))
 		{
-			for (int i = pointTo.row-1; i >= 0; i--)
+			defending = board[pointTo.row-1][pointTo.col].token;
+			if (isAttacking(attacking, defending))
 			{
-				if (verifyAttackAndDeleteToken(attacking, i, pointTo.col))
-					deleted++;
-				else
-					break;
-			}
+				for (int i = pointTo.row - 1; i >= 0; i--)
+				{
+					if (verifyAttackAndDeleteToken(attacking, i, pointTo.col))
+						deleted++;
+					else
+						break;
+				}
 
-			if (deleted > 0)
-				return true;
+				if (deleted > 0)
+					return true;
+			}
 		}
 
 		// Forward attack down
-		defending = board[pointTo.row+1][pointTo.col].token;
-		if ((pointFrom.row == pointTo.row - 1) && defending != nullptr && defending->getColour() != attacking->getColour())
+		if ((pointFrom.row == pointTo.row - 1) && isPointValid(pointTo.row+1, pointTo.col))
 		{
-			for (int i = pointTo.row+1; i < 5; i++)
+			defending = board[pointTo.row+1][pointTo.col].token;
+			if (isAttacking(attacking, defending))
 			{
-				if (verifyAttackAndDeleteToken(attacking, i, pointTo.col))
-					deleted++;
-				else
-					break;
-			}
+				for (int i = pointTo.row + 1; i < 5; i++)
+				{
+					if (verifyAttackAndDeleteToken(attacking, i, pointTo.col))
+						deleted++;
+					else
+						break;
+				}
 
-			if (deleted > 0)
-				return true;
+				if (deleted > 0)
+					return true;
+			}
 		}
 	}
 
@@ -365,161 +399,185 @@ bool Board::applyBackwardAttack(Token * attacking, Board::Point pointFrom, Board
 	if (isDiagonalMove(pointFrom, pointTo))
 	{
 		// Backward attack diagonal up right
-		defending = board[pointFrom.row+1][pointFrom.col-1].token;
-		if ((pointFrom.row == pointTo.row + 1) && (pointFrom.col == pointTo.col - 1) && defending != nullptr
-			&& defending->getColour() != attacking->getColour())
+		if ((pointFrom.row == pointTo.row + 1) && (pointFrom.col == pointTo.col - 1)
+				&& isPointValid(pointFrom.row+1, pointFrom.col-1))
 		{
-			int i = pointFrom.row + 1;
-			int j = pointFrom.col - 1;
-
-			while (i < 5 && j >= 0)
+			defending = board[pointFrom.row+1][pointFrom.col-1].token;
+			if (isAttacking(attacking, defending))
 			{
-				if (verifyAttackAndDeleteToken(attacking, i, j))
-					deleted++;
-				else
-					break;
+				int i = pointFrom.row + 1;
+				int j = pointFrom.col - 1;
 
-				i++;
-				j--;
+				while (i < 5 && j >= 0)
+				{
+					if (verifyAttackAndDeleteToken(attacking, i, j))
+						deleted++;
+					else
+						break;
+
+					i++;
+					j--;
+				}
+
+				if (deleted > 0)
+					return true;
 			}
-
-			if (deleted > 0)
-				return true;
 		}
 
 		// Backward attack diagonal up left
-		defending = board[pointFrom.row+1][pointFrom.col+1].token;
-		if ((pointFrom.row == pointTo.row + 1) && (pointFrom.col == pointTo.col + 1) && defending != nullptr
-			&& defending->getColour() != attacking->getColour())
+		if ((pointFrom.row == pointTo.row + 1) && (pointFrom.col == pointTo.col + 1)
+				&& isPointValid(pointFrom.row+1, pointFrom.col+1))
 		{
-			int i = pointFrom.row + 1;
-			int j = pointFrom.col + 1;
-
-			while (i < 5 && j < 9)
+			defending = board[pointFrom.row+1][pointFrom.col+1].token;
+			if (isAttacking(attacking, defending))
 			{
-				if (verifyAttackAndDeleteToken(attacking, i, j))
-					deleted++;
-				else
-					break;
+				int i = pointFrom.row + 1;
+				int j = pointFrom.col + 1;
 
-				i++;
-				j++;
+				while (i < 5 && j < 9)
+				{
+					if (verifyAttackAndDeleteToken(attacking, i, j))
+						deleted++;
+					else
+						break;
+
+					i++;
+					j++;
+				}
+
+				if (deleted > 0)
+					return true;
 			}
-
-			if (deleted > 0)
-				return true;
 		}
 
 		// Backward attack diagonal down left
-		defending = board[pointFrom.row-1][pointFrom.col+1].token;
-		if ((pointFrom.row == pointTo.row - 1) && (pointFrom.col == pointTo.col + 1) && defending != nullptr
-			&& defending->getColour() != attacking->getColour())
+		if ((pointFrom.row == pointTo.row - 1) && (pointFrom.col == pointTo.col + 1)
+				&& isPointValid(pointFrom.row-1, pointFrom.col+1))
 		{
-			int i = pointFrom.row - 1;
-			int j = pointFrom.col + 1;
-
-			while (i >= 0 && j < 9)
+			defending = board[pointFrom.row-1][pointFrom.col+1].token;
+			if (isAttacking(attacking, defending))
 			{
-				if (verifyAttackAndDeleteToken(attacking, i, j))
-					deleted++;
-				else
-					break;
+				int i = pointFrom.row - 1;
+				int j = pointFrom.col + 1;
 
-				i--;
-				j++;
+				while (i >= 0 && j < 9)
+				{
+					if (verifyAttackAndDeleteToken(attacking, i, j))
+						deleted++;
+					else
+						break;
+
+					i--;
+					j++;
+				}
+
+				if (deleted > 0)
+					return true;
 			}
-
-			if (deleted > 0)
-				return true;
 		}
 
 		// Backward attack diagonal down right
-		defending = board[pointFrom.row-1][pointFrom.col-1].token;
-		if ((pointFrom.row == pointTo.row - 1) && (pointFrom.col == pointTo.col - 1) && defending != nullptr
-			&& defending->getColour() != attacking->getColour())
+		if ((pointFrom.row == pointTo.row - 1) && (pointFrom.col == pointTo.col - 1)
+				&& isPointValid(pointFrom.row-1, pointFrom.col-1))
 		{
-			int i = pointFrom.row - 1;
-			int j = pointFrom.col - 1;
-
-			while (i >= 0 && j >= 0)
+			defending = board[pointFrom.row-1][pointFrom.col-1].token;
+			if (isAttacking(attacking, defending))
 			{
-				if (verifyAttackAndDeleteToken(attacking, i, j))
-					deleted++;
-				else
-					break;
+				int i = pointFrom.row - 1;
+				int j = pointFrom.col - 1;
 
-				i--;
-				j--;
+				while (i >= 0 && j >= 0)
+				{
+					if (verifyAttackAndDeleteToken(attacking, i, j))
+						deleted++;
+					else
+						break;
+
+					i--;
+					j--;
+				}
+
+				if (deleted > 0)
+					return true;
 			}
-
-			if (deleted > 0)
-				return true;
 		}
 	}
 	else
 	{
 		// Backward attack to the right
-		defending = board[pointFrom.row][pointFrom.col-1].token;
-		if ((pointFrom.col == pointTo.col - 1) && defending != nullptr && defending->getColour() != attacking->getColour())
+		if ((pointFrom.col == pointTo.col - 1) && isPointValid(pointFrom.row, pointFrom.col-1))
 		{
-			for (int i = pointFrom.col-1; i >= 0; i--)
+			defending = board[pointFrom.row][pointFrom.col-1].token;
+			if (isAttacking(attacking, defending))
 			{
-				if (verifyAttackAndDeleteToken(attacking, pointFrom.row, i))
-					deleted++;
-				else
-					break;
-			}
+				for (int i = pointFrom.col - 1; i >= 0; i--)
+				{
+					if (verifyAttackAndDeleteToken(attacking, pointFrom.row, i))
+						deleted++;
+					else
+						break;
+				}
 
-			if (deleted > 0)
-				return true;
+				if (deleted > 0)
+					return true;
+			}
 		}
 
 		// Backward attack to the left
-		defending = board[pointFrom.row][pointFrom.col+1].token;
-		if ((pointFrom.col == pointTo.col + 1) && defending != nullptr && defending->getColour() != attacking->getColour())
+		if ((pointFrom.col == pointTo.col + 1) && isPointValid(pointFrom.row, pointFrom.col+1))
 		{
-			for (int i = pointFrom.col+1; i < 9; i++)
+			defending = board[pointFrom.row][pointFrom.col+1].token;
+			if (isAttacking(attacking, defending))
 			{
-				if (verifyAttackAndDeleteToken(attacking, pointFrom.row, i))
-					deleted++;
-				else
-					break;
-			}
+				for (int i = pointFrom.col + 1; i < 9; i++)
+				{
+					if (verifyAttackAndDeleteToken(attacking, pointFrom.row, i))
+						deleted++;
+					else
+						break;
+				}
 
-			if (deleted > 0)
-				return true;
+				if (deleted > 0)
+					return true;
+			}
 		}
 
 		// Backward attack up
-		defending = board[pointFrom.row+1][pointFrom.col].token;
-		if ((pointFrom.row == pointTo.row + 1) && defending != nullptr && defending->getColour() != attacking->getColour())
+		if ((pointFrom.row == pointTo.row + 1) && isPointValid(pointFrom.row+1, pointFrom.col))
 		{
-			for (int i = pointFrom.row+1; i < 5; i++)
+			defending = board[pointFrom.row+1][pointFrom.col].token;
+			if (isAttacking(attacking, defending))
 			{
-				if (verifyAttackAndDeleteToken(attacking, i, pointFrom.col))
-					deleted++;
-				else
-					break;
-			}
+				for (int i = pointFrom.row + 1; i < 5; i++)
+				{
+					if (verifyAttackAndDeleteToken(attacking, i, pointFrom.col))
+						deleted++;
+					else
+						break;
+				}
 
-			if (deleted > 0)
-				return true;
+				if (deleted > 0)
+					return true;
+			}
 		}
 
 		// Backward attack down
-		defending = board[pointFrom.row-1][pointFrom.col].token;
-		if ((pointFrom.row == pointTo.row - 1) && defending != nullptr && defending->getColour() != attacking->getColour())
+		if ((pointFrom.row == pointTo.row - 1) && isPointValid(pointFrom.row-1, pointFrom.col))
 		{
-			for (int i = pointFrom.row-1; i >= 0; i--)
+			defending = board[pointFrom.row-1][pointFrom.col].token;
+			if (isAttacking(attacking, defending))
 			{
-				if (verifyAttackAndDeleteToken(attacking, i, pointFrom.col))
-					deleted++;
-				else
-					break;
-			}
+				for (int i = pointFrom.row - 1; i >= 0; i--)
+				{
+					if (verifyAttackAndDeleteToken(attacking, i, pointFrom.col))
+						deleted++;
+					else
+						break;
+				}
 
-			if (deleted > 0)
-				return true;
+				if (deleted > 0)
+					return true;
+			}
 		}
 	}
 

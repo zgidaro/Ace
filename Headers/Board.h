@@ -49,6 +49,9 @@ private:
 	bool isDiagonalMove(Point, Point);
 
 	bool verifyAttackAndDeleteToken(Token*, int, int);
+
+	bool isPointValid(int, int);
+	bool isAttacking(Token *, Token *);
 };
 
 
