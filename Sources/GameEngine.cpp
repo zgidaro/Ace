@@ -29,6 +29,8 @@ void GameEngine::run()
 
 	board.print();
 
+	cpu->makeMove(isGreensTurn);
+
 	int winner = 0;
 
 	while (consecutiveNonAttackMoves < 10 && winner==0)
