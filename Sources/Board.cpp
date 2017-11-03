@@ -74,6 +74,11 @@ bool Board::isSpaceEmpty(Board::Point newPoint)
     return board[newPoint.row][newPoint.col].token == nullptr;
 }
 
+bool Board::isSpaceEmpty(int row, int column)
+{
+    return board[row][column].token == nullptr;
+}
+
 bool Board::isMoveValid(Board::Point point, Board::Point newPoint)
 {
     // Check if move is in diagonal and return true if the space is black
@@ -190,7 +195,7 @@ bool Board::isDiagonalMove(Board::Point point, Board::Point newPoint)
 
 bool Board::isPointValid(int row, int col)
 {
-	return row >= 0 && col >= 0;
+	return row >= 0 && row <= 4 && col >= 0 && col <= 8;
 }
 
 bool Board::isAttacking(Token * attacking, Token * defending)
@@ -675,4 +680,50 @@ const char Board::GetCharFromInt(int number)
         default:
             return 'Z';
     }
+}
+
+vector<Token> Board::nextMoveTokens(vector<Token> tokenSet)
+{
+    vector<Token> nextMoveTokens;
+    for (int i = 0; i < tokenSet.size(); i++)
+    {
+        bool possibleMove = false;
+        Token token = tokenSet[i];
+
+        if (board[token.getRow()][token.getColumn()].isBlack)
+        {
+            if(isPointValid(token.getRow() - 1, token.getColumn() - 1) && isSpaceEmpty(token.getRow() - 1, token.getColumn() - 1))
+                possibleMove = true;
+            else if(isPointValid(token.getRow() - 1, token.getColumn()) && isSpaceEmpty(token.getRow() - 1, token.getColumn()))
+                possibleMove = true;
+            else if(isPointValid(token.getRow() - 1, token.getColumn() + 1) && isSpaceEmpty(token.getRow() - 1, token.getColumn() + 1))
+                possibleMove = true;
+            else if(isPointValid(token.getRow(), token.getColumn() + 1) && isSpaceEmpty(token.getRow(), token.getColumn() + 1))
+                possibleMove = true;
+            else if(isPointValid(token.getRow() + 1, token.getColumn() + 1) && isSpaceEmpty(token.getRow() + 1, token.getColumn() + 1))
+                possibleMove = true;
+            else if(isPointValid(token.getRow() + 1, token.getColumn()) && isSpaceEmpty(token.getRow() + 1, token.getColumn()))
+                possibleMove = true;
+            else if(isPointValid(token.getRow() + 1, token.getColumn() - 1) && isSpaceEmpty(token.getRow() + 1, token.getColumn() - 1))
+                possibleMove = true;
+            else if(isPointValid(token.getRow(), token.getColumn() - 1) && isSpaceEmpty(token.getRow(), token.getColumn() - 1))
+                possibleMove = true;
+        }
+        else
+        {
+            if(isPointValid(token.getRow() - 1, token.getColumn()) && isSpaceEmpty(token.getRow() - 1, token.getColumn()))
+                possibleMove = true;
+            else if(isPointValid(token.getRow(), token.getColumn() + 1) && isSpaceEmpty(token.getRow(), token.getColumn() + 1))
+                possibleMove = true;
+            else if(isPointValid(token.getRow() + 1, token.getColumn()) && isSpaceEmpty(token.getRow() + 1, token.getColumn()))
+                possibleMove = true;
+            else if(isPointValid(token.getRow(), token.getColumn() - 1) && isSpaceEmpty(token.getRow(), token.getColumn() - 1))
+                possibleMove = true;
+        }
+
+        if (possibleMove)
+            nextMoveTokens.push_back(tokenSet[i]);
+    }
+
+    return nextMoveTokens;
 }
