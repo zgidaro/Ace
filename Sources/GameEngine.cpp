@@ -7,6 +7,7 @@
 GameEngine::GameEngine()
 {
 	isGreensTurn = true;
+	isAIGreen = rand()%2 > 0;
 	consecutiveNonAttackMoves = 0;
 	board = Board();
 }
@@ -19,16 +20,10 @@ void GameEngine::run()
 
 	cout << "Welcome to Bonzee!" << endl << endl;
 
-	int ai = rand()%2;
-
-	if(ai > 0)
-	{
+	if(isAIGreen)
 		cout << "Green is playing as the CPU" << endl;
-	}
 	else
-	{
 		cout << "Red is playing as the CPU" << endl;
-	}
 
 	cout << "Green plays first!" << endl << endl;
 
@@ -38,6 +33,8 @@ void GameEngine::run()
 
 	while (consecutiveNonAttackMoves < 10 && winner==0)
 	{
+		cout << "e(board) = " << cpu->CalculateHeuristic(board.getGreenTokens(), board.getRedTokens()) << endl;
+
 		if (isGreensTurn)
 		{
 			cout << "Green, please enter your move: ";

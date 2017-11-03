@@ -727,3 +727,12 @@ vector<Token> Board::nextMoveTokens(vector<Token> tokenSet)
 
     return nextMoveTokens;
 }
+vector<Token> * Board::getGreenTokens()
+{
+	return &tokenGreen;
+}
+
+vector<Token> * Board::getRedTokens()
+{
+	return &tokenRed;
+}

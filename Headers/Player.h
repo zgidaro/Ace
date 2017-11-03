@@ -8,12 +8,6 @@ struct Node
 	Node ** child;
 	int count;
 	int heuristic;
-	/*
-	 * e(board) = 100 x SUM(horizontal index g) from g = 1 to # green tokens on board
-	 * 			  + 50  x SUM(vertical index g) from g = 1 to # green tokens on board
-	 * 			  - 100 x SUM(horizontal index r) from r = 1 to # red tokens on board
-	 * 			  - 50  x SUM(vertical index r) from r = 1 to # red tokens on board
-	 */
 };
 
 class Player
@@ -22,6 +16,8 @@ private:
 	Node * tree;
 	Board * board;
 
+//	Node * generateTree(Board board, int depth, bool isGreensTurn);
+//	void applyMinimax(Node * tree, bool isGreensTurn);
 public:
 	Player();
 	Player(Board*);
@@ -29,6 +25,10 @@ public:
 
 	void setTree(Node *);
 	Node * getTree();
+
+//	void makeMove(bool isGreensTurn);
+
+	static int CalculateHeuristic(vector<Token> * green, vector<Token> * red);
 };
 
 

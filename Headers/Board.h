@@ -35,12 +35,15 @@ public:
 	static const char GetCharFromInt(int);
 	static const Point ParseString(string);
 
+	vector<Token> nextMoveTokens(vector<Token>);
+
+	vector<Token> * getGreenTokens();
+	vector<Token> * getRedTokens();
+
 private:
     Point board[5][9]; //creating the board points
     vector<Token> tokenGreen;
     vector<Token> tokenRed;
-
-    vector<Token> nextMoveTokens(vector<Token>);
 
 	bool applyAttack(Point, Point);
 	bool deleteGreenToken(int, int);

@@ -31,6 +31,7 @@ private:
 	Board board;
 	int consecutiveNonAttackMoves;
 	bool isGreensTurn;
+	bool isAIGreen;
 };
 
 
