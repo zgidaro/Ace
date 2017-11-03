@@ -19,6 +19,16 @@ public:
         bool isBlack;
         Token *token;
     };
+	struct Move
+	{
+		Point from;
+		Point to;
+		Move(Point from, Point to)
+		{
+			this->from = from;
+			this->to = to;
+		};
+	};
     Board();
 	~Board();
     void UpdateBoard(vector<Token> &tokenGreen,vector<Token> &tokenRed); //theoretically update the pos(x,y) and color associated to it
@@ -35,7 +45,7 @@ public:
 	static const char GetCharFromInt(int);
 	static const Point ParseString(string);
 
-	vector<Token> nextMoveTokens(vector<Token>);
+	vector<Move> nextMoves(vector<Token>);
 
 	vector<Token> * getGreenTokens();
 	vector<Token> * getRedTokens();

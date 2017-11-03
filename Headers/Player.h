@@ -16,8 +16,7 @@ private:
 	Node * tree;
 	Board * board;
 
-//	Node * generateTree(Board board, int depth, bool isGreensTurn);
-//	void applyMinimax(Node * tree, bool isGreensTurn);
+	Node * generateTree(Board board, int depth, bool isGreensTurn);
 public:
 	Player();
 	Player(Board*);
@@ -26,7 +25,7 @@ public:
 	void setTree(Node *);
 	Node * getTree();
 
-//	void makeMove(bool isGreensTurn);
+	void makeMove(bool isGreensTurn);
 
 	static int CalculateHeuristic(vector<Token> * green, vector<Token> * red);
 };

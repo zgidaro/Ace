@@ -147,12 +147,41 @@ bool Board::applyMove(Board::Point point, Board::Point newPoint)
     token->setColumn(newPoint.col);
     token->setRow(newPoint.row);
 
+	//TODO: Fix this, modifying the pointer should automatically modify the token in the vector
+	if (token->getColour() == 'G')
+	{
+		for (int i = 0; i < tokenGreen.size(); ++i)
+		{
+			if (tokenGreen[i].getRow() == point.row && tokenGreen[i].getColumn() == point.col)
+			{
+				tokenGreen[i].setColumn(token->getColumn());
+				tokenGreen[i].setRow(token->getRow());
+				break;
+			}
+		}
+	}
+	else
+	{
+		for (int i = 0; i < tokenRed.size(); ++i)
+		{
+			if (tokenRed[i].getRow() == point.row && tokenRed[i].getColumn() == point.col)
+			{
+				tokenRed[i].setColumn(token->getColumn());
+				tokenRed[i].setRow(token->getRow());
+				break;
+			}
+		}
+	}
+
     board[newPoint.row][newPoint.col].token = token;
     board[point.row][point.col].token = nullptr;
 
     attacked = applyAttack(point, newPoint);
 
     UpdateBoard(tokenGreen, tokenRed);
+
+	// Remove this after, used to debug
+	cout << GetCharFromInt(point.row) << point.col+1 << "-" << GetCharFromInt(newPoint.row) << newPoint.col+1 << endl;
 
 	return attacked;
 }
@@ -682,50 +711,49 @@ const char Board::GetCharFromInt(int number)
     }
 }
 
-vector<Token> Board::nextMoveTokens(vector<Token> tokenSet)
+vector<Board::Move> Board::nextMoves(vector<Token> tokenSet)
 {
-    vector<Token> nextMoveTokens;
+    vector<Board::Move> nextMoves;
     for (int i = 0; i < tokenSet.size(); i++)
     {
         bool possibleMove = false;
         Token token = tokenSet[i];
 
+		//TODO: Clean this up as well
+		//Using emblace_back instead of push_back because it is faster when creating constructors on the spot
         if (board[token.getRow()][token.getColumn()].isBlack)
         {
             if(isPointValid(token.getRow() - 1, token.getColumn() - 1) && isSpaceEmpty(token.getRow() - 1, token.getColumn() - 1))
-                possibleMove = true;
-            else if(isPointValid(token.getRow() - 1, token.getColumn()) && isSpaceEmpty(token.getRow() - 1, token.getColumn()))
-                possibleMove = true;
-            else if(isPointValid(token.getRow() - 1, token.getColumn() + 1) && isSpaceEmpty(token.getRow() - 1, token.getColumn() + 1))
-                possibleMove = true;
-            else if(isPointValid(token.getRow(), token.getColumn() + 1) && isSpaceEmpty(token.getRow(), token.getColumn() + 1))
-                possibleMove = true;
-            else if(isPointValid(token.getRow() + 1, token.getColumn() + 1) && isSpaceEmpty(token.getRow() + 1, token.getColumn() + 1))
-                possibleMove = true;
-            else if(isPointValid(token.getRow() + 1, token.getColumn()) && isSpaceEmpty(token.getRow() + 1, token.getColumn()))
-                possibleMove = true;
-            else if(isPointValid(token.getRow() + 1, token.getColumn() - 1) && isSpaceEmpty(token.getRow() + 1, token.getColumn() - 1))
-                possibleMove = true;
-            else if(isPointValid(token.getRow(), token.getColumn() - 1) && isSpaceEmpty(token.getRow(), token.getColumn() - 1))
-                possibleMove = true;
+				nextMoves.emplace_back(Board::Move(board[token.getRow()][token.getColumn()], board[token.getRow()-1][token.getColumn()-1]));
+            if(isPointValid(token.getRow() - 1, token.getColumn()) && isSpaceEmpty(token.getRow() - 1, token.getColumn()))
+				nextMoves.emplace_back(Board::Move(board[token.getRow()][token.getColumn()], board[token.getRow()-1][token.getColumn()]));
+            if(isPointValid(token.getRow() - 1, token.getColumn() + 1) && isSpaceEmpty(token.getRow() - 1, token.getColumn() + 1))
+				nextMoves.emplace_back(Board::Move(board[token.getRow()][token.getColumn()], board[token.getRow()-1][token.getColumn()+1]));
+            if(isPointValid(token.getRow(), token.getColumn() + 1) && isSpaceEmpty(token.getRow(), token.getColumn() + 1))
+				nextMoves.emplace_back(Board::Move(board[token.getRow()][token.getColumn()], board[token.getRow()][token.getColumn()+1]));
+            if(isPointValid(token.getRow() + 1, token.getColumn() + 1) && isSpaceEmpty(token.getRow() + 1, token.getColumn() + 1))
+				nextMoves.emplace_back(Board::Move(board[token.getRow()][token.getColumn()], board[token.getRow()+1][token.getColumn()+1]));
+            if(isPointValid(token.getRow() + 1, token.getColumn()) && isSpaceEmpty(token.getRow() + 1, token.getColumn()))
+				nextMoves.emplace_back(Board::Move(board[token.getRow()][token.getColumn()], board[token.getRow()+1][token.getColumn()]));
+            if(isPointValid(token.getRow() + 1, token.getColumn() - 1) && isSpaceEmpty(token.getRow() + 1, token.getColumn() - 1))
+				nextMoves.emplace_back(Board::Move(board[token.getRow()][token.getColumn()], board[token.getRow()+1][token.getColumn()-1]));
+            if(isPointValid(token.getRow(), token.getColumn() - 1) && isSpaceEmpty(token.getRow(), token.getColumn() - 1))
+				nextMoves.emplace_back(Board::Move(board[token.getRow()][token.getColumn()], board[token.getRow()][token.getColumn()-1]));
         }
         else
         {
             if(isPointValid(token.getRow() - 1, token.getColumn()) && isSpaceEmpty(token.getRow() - 1, token.getColumn()))
-                possibleMove = true;
-            else if(isPointValid(token.getRow(), token.getColumn() + 1) && isSpaceEmpty(token.getRow(), token.getColumn() + 1))
-                possibleMove = true;
-            else if(isPointValid(token.getRow() + 1, token.getColumn()) && isSpaceEmpty(token.getRow() + 1, token.getColumn()))
-                possibleMove = true;
-            else if(isPointValid(token.getRow(), token.getColumn() - 1) && isSpaceEmpty(token.getRow(), token.getColumn() - 1))
-                possibleMove = true;
+				nextMoves.emplace_back(Board::Move(board[token.getRow()][token.getColumn()], board[token.getRow()-1][token.getColumn()]));
+            if(isPointValid(token.getRow(), token.getColumn() + 1) && isSpaceEmpty(token.getRow(), token.getColumn() + 1))
+				nextMoves.emplace_back(Board::Move(board[token.getRow()][token.getColumn()], board[token.getRow()][token.getColumn()+1]));
+            if(isPointValid(token.getRow() + 1, token.getColumn()) && isSpaceEmpty(token.getRow() + 1, token.getColumn()))
+				nextMoves.emplace_back(Board::Move(board[token.getRow()][token.getColumn()], board[token.getRow()+1][token.getColumn()]));
+            if(isPointValid(token.getRow(), token.getColumn() - 1) && isSpaceEmpty(token.getRow(), token.getColumn() - 1))
+				nextMoves.emplace_back(Board::Move(board[token.getRow()][token.getColumn()], board[token.getRow()][token.getColumn()-1]));
         }
-
-        if (possibleMove)
-            nextMoveTokens.push_back(tokenSet[i]);
     }
 
-    return nextMoveTokens;
+    return nextMoves;
 }
 vector<Token> * Board::getGreenTokens()
 {
