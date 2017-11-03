@@ -6,9 +6,11 @@
 #define ACE_GAMEENGINE_H
 
 #include "Board.h"
+#include "Player.h"
 #include <iostream>
 #include <string>
 #include <sstream>
+
 using namespace std;
 
 class GameEngine {
@@ -23,6 +25,9 @@ public:
     void checkPos(); */
 
 private:
+	Player * cpu;
+	Player red;
+	Player green;
 	Board board;
 	int consecutiveNonAttackMoves;
 	bool isGreensTurn;

@@ -1,6 +1,8 @@
 #ifndef ACE_PLAYER_H
 #define ACE_PLAYER_H
 
+#include "Board.h"
+
 struct Node
 {
 	Node ** child;
@@ -18,9 +20,11 @@ class Player
 {
 private:
 	Node * tree;
+	Board * board;
 
 public:
 	Player();
+	Player(Board*);
 	~Player();
 
 	void setTree(Node *);

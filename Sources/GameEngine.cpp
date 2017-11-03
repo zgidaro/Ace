@@ -15,7 +15,20 @@ void GameEngine::run()
 {
 	board.initializeTokens();
 
+	cpu = new Player(&board);
+
 	cout << "Welcome to Bonzee!" << endl << endl;
+
+	int ai = rand()%2;
+
+	if(ai > 0)
+	{
+		cout << "Green is playing as the CPU" << endl;
+	}
+	else
+	{
+		cout << "Red is playing as the CPU" << endl;
+	}
 
 	cout << "Green plays first!" << endl << endl;
 
