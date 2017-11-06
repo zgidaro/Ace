@@ -7,15 +7,14 @@
 struct Node
 {
 	Node ** child;
-	Node * parent;
 	int count;
 	int heuristic;
 	
-	Board::Move * move;
-	
-	void addMove(Board::Move * m)
+	Board::Move *move=new Board::Move;
+
+	void addMove(Board::Move m)
 	{	
-		move = m;
+		(*move) = m;
 	};
 	
 };
@@ -42,6 +41,7 @@ public:
 	void printTree(Node*);
 	bool isParentOfLeaf(Node&);
 	void MiniMax(Node*, bool);
+	int getMoveIndex(Node*, bool);
 
 	static int CalculateHeuristic(vector<Token> * green, vector<Token> * red);
 };

@@ -28,6 +28,10 @@ public:
 			this->from = from;
 			this->to = to;
 		};
+		Move() {
+			/*this->from = new Point;
+			this->to = new Point;*/
+		};
 	};
     Board();
 	~Board();

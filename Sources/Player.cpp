@@ -29,6 +29,7 @@ Node *Player::getTree()
 
 Node * Player::generateTree(Board b, int depth, bool isGreensTurn)
 {
+	
 	Board board = b;
 	vector<Board::Move> moves;
 
@@ -42,20 +43,24 @@ Node * Player::generateTree(Board b, int depth, bool isGreensTurn)
 	tree->count = (int)moves.size();
 	tree->heuristic = CalculateHeuristic(board.getGreenTokens(), board.getRedTokens());
 
+
 	if (depth > 0 && tree->count > 0)
 	{
 		tree->child = new Node *[tree->count];
 		for (int i = 0; i < tree->count; ++i)
 		{
 			board.applyMove(moves[i].from, moves[i].to);
+
 			tree->child[i] = generateTree(board, depth - 1, !isGreensTurn);
-			tree->child[i]->addMove(&moves[i]);
-			tree->child[i]->parent = tree;
+			
+			tree->child[i]->addMove(moves[i]);
+			
 			board = b;
 		}
 	}
 	else
 	{
+		
 		tree->child = nullptr;
 	}
 
@@ -89,19 +94,34 @@ void Player::makeMove(bool isGreensTurn)
 {
 	Node * tree = generateTree(*board, 3, isGreensTurn);
 
+
 	int miniMaxPlayerTurn = isGreensTurn;
+
+	for (int i = 0; i < tree->count; i++) {
+		cout<<"child move at "<<i<<" is:"<<tree->child[i]->move->from.row << "-" << tree->child[i]->move->from.col << " to: " << tree->child[i]->move->to.row << "-" << tree->child[i]->move->to.col << endl;
+	}
 
 	if (tree != NULL)
 	{
-		for (int i = 0; i < 3; i++) 
+		for (int i = 0; i < 2; i++) 
 		{
+
 			MiniMax(tree, isGreensTurn);
+			cout << "Trial 1:chosn Move is from: " << tree->move->from.row << "-" << tree->move->from.col << " to: " << tree->move->to.row << "-" << tree->move->to.col << endl;
+			cout << "Trial 1chosen move heuristic is: " << tree->heuristic << endl;
 		}
-	
+
 
 	}
+	int index = getMoveIndex(tree, isGreensTurn);
+	Board::Move *chosenMove = tree->child[index]->move;
+
+
 
 	//make move
+	//cout << "chosen Move is from: " << tree->move->from.row << "-" << tree->move->from.col << " to: " << tree->move->to.row << "-" << tree->move->to.col << endl;
+	cout << "chosen Move is from: " << chosenMove->from.row << "-" << chosenMove->from.col << " to: " << chosenMove->to.row << "-" << chosenMove->to.col << endl;
+	cout << "chosen move heuristic is: " << tree->heuristic << endl;
 	//(*board).applyMove(tree->move->from, tree->move->to);
 
 }
@@ -142,6 +162,7 @@ bool Player::isParentOfLeaf(Node& subTree)
 
 void Player::MiniMax(Node *tree, bool minimaxTurn)
 {
+	
 	if (isParentOfLeaf(*tree))
 	{
 		
@@ -149,6 +170,10 @@ void Player::MiniMax(Node *tree, bool minimaxTurn)
 		Node& MaxorMinNode = computeMaxOrMin(*tree, minimaxTurn);
 		//change node value
 		changeNodeValue(tree, MaxorMinNode);
+		/*for (int i = 0; i < tree->count; i++) {
+			cout << "MOVES OF LEAFS" << tree->child[i]->move->from.col << endl;
+		}*/
+		//cout << "tree move " << tree->move->from.col;
 	
 	}
 	else
@@ -195,8 +220,43 @@ Node & Player::computeMaxOrMin(Node& tree, bool miniMaxPlayerTurn)
 
 void Player::changeNodeValue(Node* tree, Node& minimaxValue)
 {
-	(*tree) = minimaxValue;
+	//cout << minimaxValue.move->from.col << endl;
+	//(*tree) = minimaxValue;
+	tree->heuristic = minimaxValue.heuristic;
+	tree->count = minimaxValue.count;
+	tree->child = minimaxValue.child;
 	
+}
+
+int Player::getMoveIndex(Node *tree , bool isGreenTurn)
+{
+	int index = 0;
+	if (isGreenTurn)
+	{
+		for (int i = 1; i < tree->count; i++)
+		{
+			if (tree->child[i]->heuristic > tree->child[index]->heuristic)
+			{
+				index = i;
+				
+			}
+		}
+		
+	}
+	else
+	{
+		for (int i = 1; i < tree->count; i++)
+		{
+			if (tree->child[i]->heuristic < tree->child[index]->heuristic)
+			{
+				index = i;
+			}
+		}
+	
+	}
+
+	return index;
+
 }
 
 
