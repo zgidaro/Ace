@@ -51,8 +51,8 @@ public:
 
 	vector<Move> nextMoves(vector<Token>);
 
-	vector<Token> * getGreenTokens();
-	vector<Token> * getRedTokens();
+	vector<Token> getGreenTokens();
+	vector<Token> getRedTokens();
 
 private:
     Point board[5][9]; //creating the board points

@@ -34,15 +34,13 @@ Node * Player::generateTree(Board b, int depth, bool isGreensTurn)
 	vector<Board::Move> moves;
 
 	if (isGreensTurn)
-		moves = board.nextMoves(*(board.getGreenTokens()));
+		moves = board.nextMoves(board.getGreenTokens());
 	else
-		moves = board.nextMoves(*(board.getRedTokens()));
+		moves = board.nextMoves(board.getRedTokens());
 
 	auto * tree = new Node();
 
 	tree->count = (int)moves.size();
-	tree->heuristic = CalculateHeuristic(board.getGreenTokens(), board.getRedTokens());
-
 
 	if (depth > 0 && tree->count > 0)
 	{
@@ -60,7 +58,7 @@ Node * Player::generateTree(Board b, int depth, bool isGreensTurn)
 	}
 	else
 	{
-		
+		tree->heuristic = CalculateHeuristic(board.getGreenTokens(), board.getRedTokens());
 		tree->child = nullptr;
 	}
 
@@ -73,18 +71,18 @@ Node * Player::generateTree(Board b, int depth, bool isGreensTurn)
 * 			  - 100 x SUM(horizontal index r) from r = 1 to # red tokens on board
 * 			  - 50  x SUM(vertical index r) from r = 1 to # red tokens on board
 */
-int Player::CalculateHeuristic(vector<Token> * green, vector<Token> * red)
+int Player::CalculateHeuristic(vector<Token> green, vector<Token> red)
 {
 	int e_board = 0;
 
-	for (int i = 0; i < (*green).size(); ++i)
+	for (int i = 0; i < green.size(); ++i)
 	{
-		e_board += (100 * (*green)[i].getRow()) + (50 * (*green)[i].getColumn());
+		e_board += (100 * green[i].getRow()) + (50 * green[i].getColumn());
 	}
 
-	for (int i = 0; i < (*red).size(); ++i)
+	for (int i = 0; i < red.size(); ++i)
 	{
-		e_board -= (100 * (*red)[i].getRow()) + (50 * (*red)[i].getColumn());
+		e_board -= (100 * red[i].getRow()) + (50 * red[i].getColumn());
 	}
 
 	return e_board;
@@ -108,7 +106,7 @@ Board::Move Player::makeMove(bool isGreensTurn)
 	int index = getMoveIndex(tree, isGreensTurn);
 	Board::Move *chosenMove = tree->child[index]->move;
 	
-	cout << "chosen Move is from: " << chosenMove->from.row << "-" << chosenMove->from.col << " to: " << chosenMove->to.row << "-" << chosenMove->to.col << endl;
+	cout << "chosen Move is from: " << Board::GetCharFromInt(chosenMove->from.row) << chosenMove->from.col +1 << " to: " << Board::GetCharFromInt(chosenMove->to.row) << chosenMove->to.col +1 << endl;
 	cout << "chosen move heuristic is: " << tree->child[index]->heuristic << endl;
 
 	return (*chosenMove);
@@ -147,7 +145,7 @@ void Player::printTree(Node * tree)
 }
 
 bool Player::isParentOfLeaf(Node& subTree)
-{	
+{	//TODO: loop over children for certain scenarios
 	return(subTree.child[0]->child == NULL);
 }
 

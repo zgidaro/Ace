@@ -143,19 +143,19 @@ const Board::Point Board::ParseString(string pos)
 bool Board::applyMove(Board::Point point, Board::Point newPoint)
 {
 	bool attacked = false;
-    Token *token = board[point.row][point.col].token;
-    token->setColumn(newPoint.col);
-    token->setRow(newPoint.row);
+    Token token = *board[point.row][point.col].token;
+    token.setColumn(newPoint.col);
+    token.setRow(newPoint.row);
 
 	//TODO: Fix this, modifying the pointer should automatically modify the token in the vector
-	if (token->getColour() == 'G')
+	if (token.getColour() == 'G')
 	{
 		for (int i = 0; i < tokenGreen.size(); ++i)
 		{
 			if (tokenGreen[i].getRow() == point.row && tokenGreen[i].getColumn() == point.col)
 			{
-				tokenGreen[i].setColumn(token->getColumn());
-				tokenGreen[i].setRow(token->getRow());
+				tokenGreen[i].setColumn(token.getColumn());
+				tokenGreen[i].setRow(token.getRow());
 				break;
 			}
 		}
@@ -166,22 +166,19 @@ bool Board::applyMove(Board::Point point, Board::Point newPoint)
 		{
 			if (tokenRed[i].getRow() == point.row && tokenRed[i].getColumn() == point.col)
 			{
-				tokenRed[i].setColumn(token->getColumn());
-				tokenRed[i].setRow(token->getRow());
+				tokenRed[i].setColumn(token.getColumn());
+				tokenRed[i].setRow(token.getRow());
 				break;
 			}
 		}
 	}
 
-    board[newPoint.row][newPoint.col].token = token;
+    board[newPoint.row][newPoint.col].token = &token;
     board[point.row][point.col].token = nullptr;
 
     attacked = applyAttack(point, newPoint);
 
     UpdateBoard(tokenGreen, tokenRed);
-
-	// Remove this after, used to debug
-	cout << GetCharFromInt(point.row) << point.col+1 << "-" << GetCharFromInt(newPoint.row) << newPoint.col+1 << endl;
 
 	return attacked;
 }
@@ -755,12 +752,12 @@ vector<Board::Move> Board::nextMoves(vector<Token> tokenSet)
 
     return nextMoves;
 }
-vector<Token> * Board::getGreenTokens()
+vector<Token> Board::getGreenTokens()
 {
-	return &tokenGreen;
+	return tokenGreen;
 }
 
-vector<Token> * Board::getRedTokens()
+vector<Token> Board::getRedTokens()
 {
-	return &tokenRed;
+	return tokenRed;
 }

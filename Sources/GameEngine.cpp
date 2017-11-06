@@ -35,16 +35,6 @@ void GameEngine::run()
 
 	board.print();
 
-	/*Board::Move cpuMove = cpu->makeMove(isGreensTurn);
-
-	cout << "will apply move" << cpuMove.from.col << cpuMove.to.col << endl;
-
-	board.applyMove(cpuMove.from, cpuMove.to);
-
-	board.print();*/
-
-	//cpu->makeMove(isGreensTurn);
-
 	int winner = 0;
 
 	while (consecutiveNonAttackMoves < 10 && winner == 0)
@@ -119,15 +109,6 @@ void GameEngine::run()
 				}
 			}
 		}
-
-		/*string moveFrom;
-		string moveTo;
-
-		cin >> moveFrom >> moveTo;
-
-		Board::Point pointFrom = Board::ParseString(moveFrom);
-		Board::Point pointTo = Board::ParseString(moveTo);*/
-
 
 		if (board.applyMove(pointFrom, pointTo))
 			consecutiveNonAttackMoves = 0;

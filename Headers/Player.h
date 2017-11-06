@@ -43,7 +43,7 @@ public:
 	void MiniMax(Node*, bool);
 	int getMoveIndex(Node*, bool);
 
-	static int CalculateHeuristic(vector<Token> * green, vector<Token> * red);
+	static int CalculateHeuristic(vector<Token> green, vector<Token> red);
 };
 
 
