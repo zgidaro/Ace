@@ -35,7 +35,7 @@ public:
 	void setTree(Node *);
 	Node * getTree();
 
-	void makeMove(bool isGreensTurn);
+	Board::Move makeMove(bool isGreensTurn);
 	Node & computeMaxOrMin(Node&,bool);
 	void changeNodeValue(Node*, Node&);
 	void printTree(Node*);

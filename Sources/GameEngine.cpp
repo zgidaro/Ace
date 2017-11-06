@@ -7,7 +7,7 @@
 GameEngine::GameEngine()
 {
 	isGreensTurn = true;
-	isAIGreen = rand()%2 > 0;
+	isAIGreen = rand() % 2 > 0;
 	consecutiveNonAttackMoves = 0;
 	board = Board();
 }
@@ -20,48 +20,114 @@ void GameEngine::run()
 
 	cout << "Welcome to Bonzee!" << endl << endl;
 
-	if(isAIGreen)
+	if (isAIGreen)
+	{
 		cout << "Green is playing as the CPU" << endl;
+	}
+
 	else
+	{
 		cout << "Red is playing as the CPU" << endl;
+	}
+
 
 	cout << "Green plays first!" << endl << endl;
 
 	board.print();
 
-	cpu->makeMove(isGreensTurn);
+	/*Board::Move cpuMove = cpu->makeMove(isGreensTurn);
+
+	cout << "will apply move" << cpuMove.from.col << cpuMove.to.col << endl;
+
+	board.applyMove(cpuMove.from, cpuMove.to);
+
+	board.print();*/
+
+	//cpu->makeMove(isGreensTurn);
 
 	int winner = 0;
 
-	while (consecutiveNonAttackMoves < 10 && winner==0)
+	while (consecutiveNonAttackMoves < 10 && winner == 0)
 	{
+		Board::Point pointFrom;
+		Board::Point pointTo;
+		Board::Move cpuMove;
+
 		cout << "e(board) = " << cpu->CalculateHeuristic(board.getGreenTokens(), board.getRedTokens()) << endl;
 
 		if (isGreensTurn)
 		{
-			cout << "Green, please enter your move: ";
+			if (isAIGreen) 
+			{
+				cout << "AI will now play as Green ";
+
+				cpuMove = cpu->makeMove(isGreensTurn);
+				pointFrom = cpuMove.from;
+				pointTo = cpuMove.to;
+			}
+			else 
+			{
+				string moveFrom;
+				string moveTo;
+
+				cout << "Green, please enter your move: ";
+
+				cin >> moveFrom >> moveTo;
+
+				 pointFrom = Board::ParseString(moveFrom);
+				 pointTo = Board::ParseString(moveTo);
+
+				 while (!isMoveValid(pointFrom, pointTo))
+				 {
+					 cout << "Sorry, that move is invalid. Please enter another move: ";
+					 cin >> moveFrom >> moveTo;
+					 pointFrom = Board::ParseString(moveFrom);
+					 pointTo = Board::ParseString(moveTo);
+				 }
+			}
+			
+
 		}
 		else
 		{
-			cout << "Red, please enter your move: ";
+			if(!isAIGreen)
+			{
+				cout << "AI will now play as Red ";
+
+				cpuMove = cpu->makeMove(isGreensTurn);
+				pointFrom = cpuMove.from;
+				pointTo = cpuMove.to;
+			}
+			else
+			{
+				string moveFrom;
+				string moveTo;
+
+				cout << "Red, please enter your move: ";
+
+				cin >> moveFrom >> moveTo;
+
+				pointFrom = Board::ParseString(moveFrom);
+				pointTo = Board::ParseString(moveTo);
+
+				while (!isMoveValid(pointFrom, pointTo))
+				{
+					cout << "Sorry, that move is invalid. Please enter another move: ";
+					cin >> moveFrom >> moveTo;
+					pointFrom = Board::ParseString(moveFrom);
+					pointTo = Board::ParseString(moveTo);
+				}
+			}
 		}
 
-		string moveFrom;
+		/*string moveFrom;
 		string moveTo;
 
 		cin >> moveFrom >> moveTo;
 
 		Board::Point pointFrom = Board::ParseString(moveFrom);
-		Board::Point pointTo = Board::ParseString(moveTo);
+		Board::Point pointTo = Board::ParseString(moveTo);*/
 
-		
-		while (!isMoveValid(pointFrom, pointTo))
-		{
-			cout << "Sorry, that move is invalid. Please enter another move: ";
-			cin >> moveFrom >> moveTo;
-			pointFrom = Board::ParseString(moveFrom);
-			pointTo = Board::ParseString(moveTo);
-		}
 
 		if (board.applyMove(pointFrom, pointTo))
 			consecutiveNonAttackMoves = 0;
@@ -74,7 +140,7 @@ void GameEngine::run()
 		board.print();
 	}
 
-		announceWinner(winner);
+	announceWinner(winner);
 }
 
 bool GameEngine::isMoveValid(Board::Point point, Board::Point newPoint)
@@ -98,7 +164,7 @@ bool GameEngine::isMoveValid(Board::Point point, Board::Point newPoint)
 	}
 }
 
-void GameEngine::announceWinner(int winner) 
+void GameEngine::announceWinner(int winner)
 {
 	if (winner == 1)
 	{
@@ -108,14 +174,14 @@ void GameEngine::announceWinner(int winner)
 	{
 		cout << "Red Player Wins !" << endl;
 	}
-	else 
+	else
 	{
 		cout << "It's a Draw !" << endl;
 	}
 
 }
 
-bool GameEngine::checkPointBounds(Board::Point p) 
+bool GameEngine::checkPointBounds(Board::Point p)
 {
 	return(p.row > -1 && p.row < 5 && p.col > -1 && p.col < 9);
 }

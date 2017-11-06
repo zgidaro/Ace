@@ -90,38 +90,29 @@ int Player::CalculateHeuristic(vector<Token> * green, vector<Token> * red)
 	return e_board;
 }
 
-void Player::makeMove(bool isGreensTurn)
+Board::Move Player::makeMove(bool isGreensTurn)
 {
 	Node * tree = generateTree(*board, 3, isGreensTurn);
 
 
 	int miniMaxPlayerTurn = isGreensTurn;
 
-	for (int i = 0; i < tree->count; i++) {
-		cout<<"child move at "<<i<<" is:"<<tree->child[i]->move->from.row << "-" << tree->child[i]->move->from.col << " to: " << tree->child[i]->move->to.row << "-" << tree->child[i]->move->to.col << endl;
-	}
+	//for (int i = 0; i < tree->count; i++) {
+	//	cout<<"child move at "<<i<<" is:"<<tree->child[i]->move->from.row << "-" << tree->child[i]->move->from.col << " to: " << tree->child[i]->move->to.row << "-" << tree->child[i]->move->to.col << endl;
+	//}
 
-	if (tree != NULL)
-	{
-		for (int i = 0; i < 2; i++) 
-		{
+	MiniMax(tree, isGreensTurn);
+	MiniMax(tree, isGreensTurn);
 
-			MiniMax(tree, isGreensTurn);
-			cout << "Trial 1:chosn Move is from: " << tree->move->from.row << "-" << tree->move->from.col << " to: " << tree->move->to.row << "-" << tree->move->to.col << endl;
-			cout << "Trial 1chosen move heuristic is: " << tree->heuristic << endl;
-		}
-
-
-	}
+	//get chosen move index
 	int index = getMoveIndex(tree, isGreensTurn);
 	Board::Move *chosenMove = tree->child[index]->move;
-
-
-
-	//make move
-	//cout << "chosen Move is from: " << tree->move->from.row << "-" << tree->move->from.col << " to: " << tree->move->to.row << "-" << tree->move->to.col << endl;
+	
 	cout << "chosen Move is from: " << chosenMove->from.row << "-" << chosenMove->from.col << " to: " << chosenMove->to.row << "-" << chosenMove->to.col << endl;
-	cout << "chosen move heuristic is: " << tree->heuristic << endl;
+	cout << "chosen move heuristic is: " << tree->child[index]->heuristic << endl;
+
+	return (*chosenMove);
+	//make move
 	//(*board).applyMove(tree->move->from, tree->move->to);
 
 }
@@ -168,12 +159,9 @@ void Player::MiniMax(Node *tree, bool minimaxTurn)
 		
 		//get Max or min node
 		Node& MaxorMinNode = computeMaxOrMin(*tree, minimaxTurn);
+
 		//change node value
 		changeNodeValue(tree, MaxorMinNode);
-		/*for (int i = 0; i < tree->count; i++) {
-			cout << "MOVES OF LEAFS" << tree->child[i]->move->from.col << endl;
-		}*/
-		//cout << "tree move " << tree->move->from.col;
 	
 	}
 	else
@@ -197,8 +185,6 @@ Node & Player::computeMaxOrMin(Node& tree, bool miniMaxPlayerTurn)
 			if (tree.child[i]->heuristic > max->heuristic)
 			{
 				max = tree.child[i];
-				/*cout << "MAX ROWS" << endl;
-				cout << tree.child[i]->move->from.row << " " << tree.child[i]->move->from.col << endl;*/
 			}
 		}
 		return *max;
