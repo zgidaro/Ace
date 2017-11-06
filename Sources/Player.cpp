@@ -120,7 +120,8 @@ void Player::printTree(Node * tree)
 		for (int i = 0; i < tree->count; i++)
 		{
 			
-			if (tree->child != NULL) {
+			if (tree->child != NULL) 
+			{
 				printTree(tree->child[i]);
 			}
 		}
@@ -171,8 +172,8 @@ Node & Player::computeMaxOrMin(Node& tree, bool miniMaxPlayerTurn)
 			if (tree.child[i]->heuristic > max->heuristic)
 			{
 				max = tree.child[i];
-				cout << "MAX ROWS" << endl;
-				cout << tree.child[i]->move->from.row << " " << tree.child[i]->move->from.col << endl;
+				/*cout << "MAX ROWS" << endl;
+				cout << tree.child[i]->move->from.row << " " << tree.child[i]->move->from.col << endl;*/
 			}
 		}
 		return *max;
