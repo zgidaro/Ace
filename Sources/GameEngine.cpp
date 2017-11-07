@@ -6,8 +6,20 @@
 
 GameEngine::GameEngine()
 {
-	isGreensTurn = true;
-	isAIGreen = rand() % 2 > 0;
+	isGreensTurn = true; 
+	
+	string playerColor;
+	//isAIGreen = rand() % 2 > 0;
+	cout << "DO you want to be R or G ?" << endl;
+	cin >> playerColor;
+	if (playerColor == "G" || playerColor == "Green" || playerColor == "green" || playerColor == "g") 
+	{
+		isAIGreen = true;
+	}
+	else 
+	{
+		isAIGreen = false;
+	}
 	consecutiveNonAttackMoves = 0;
 	board = Board();
 }
@@ -47,7 +59,7 @@ void GameEngine::run()
 
 		if (isGreensTurn)
 		{
-			if (isAIGreen) 
+			if (true) 
 			{
 				cout << "AI will now play as Green ";
 
@@ -80,7 +92,7 @@ void GameEngine::run()
 		}
 		else
 		{
-			if(!isAIGreen)
+			if(true)
 			{
 				cout << "AI will now play as Red ";
 

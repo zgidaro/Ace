@@ -99,15 +99,22 @@ Board::Move Player::makeMove(bool isGreensTurn)
 	//	cout<<"child move at "<<i<<" is:"<<tree->child[i]->move->from.row << "-" << tree->child[i]->move->from.col << " to: " << tree->child[i]->move->to.row << "-" << tree->child[i]->move->to.col << endl;
 	//}
 
-	MiniMax(tree, isGreensTurn);
-	MiniMax(tree, isGreensTurn);
+	//change 2 for the depth of levels -1 
+	for (int i = 0; i < 2; i++) {
+		MiniMax(tree, isGreensTurn);
+	}
+
 
 	//get chosen move index
 	int index = getMoveIndex(tree, isGreensTurn);
-	Board::Move *chosenMove = tree->child[index]->move;
+	//Board::Move *chosenMove;
+
+	//if (tree->child[index] != NULL) {
+		Board::Move *chosenMove = tree->child[index]->move;
+		cout << "chosen Move is from: " << Board::GetCharFromInt(chosenMove->from.row) << chosenMove->from.col + 1 << " to: " << Board::GetCharFromInt(chosenMove->to.row) << chosenMove->to.col + 1 << endl;
+		cout << "chosen move heuristic is: " << tree->child[index]->heuristic << endl;
+	//}
 	
-	cout << "chosen Move is from: " << Board::GetCharFromInt(chosenMove->from.row) << chosenMove->from.col +1 << " to: " << Board::GetCharFromInt(chosenMove->to.row) << chosenMove->to.col +1 << endl;
-	cout << "chosen move heuristic is: " << tree->child[index]->heuristic << endl;
 
 	return (*chosenMove);
 	//make move
@@ -115,42 +122,28 @@ Board::Move Player::makeMove(bool isGreensTurn)
 
 }
 
-void Player::printTree(Node * tree)
-{
-
-	if (!tree)
-	{
-		return;
-	}
-
-	if (tree->child != NULL)
-	{
-
-		for (int i = 0; i < tree->count; i++)
-		{
-			
-			if (tree->child != NULL) 
-			{
-				printTree(tree->child[i]);
-			}
-		}
-
-	}
-	else
-	{
-		cout << "\n" << endl;
-	}
-
-
-}
 
 bool Player::isParentOfLeaf(Node& subTree)
 {	//TODO: loop over children for certain scenarios
-	return(subTree.child[0]->child == NULL);
+	bool ParentOfLeaf = true;
+	for (int i = 0; i < subTree.count; i++) 
+	{
+		if (subTree.child[i] != NULL) 
+		{
+			if (subTree.child[i]->child != NULL) 
+			{
+				ParentOfLeaf = false;
+			}
+		}
+	}
+	return ParentOfLeaf;
 }
 
 void Player::MiniMax(Node *tree, bool minimaxTurn)
 {
+	if (tree == NULL) {
+		return;
+	}
 	
 	if (isParentOfLeaf(*tree))
 	{
@@ -174,32 +167,35 @@ void Player::MiniMax(Node *tree, bool minimaxTurn)
 }
 Node & Player::computeMaxOrMin(Node& tree, bool miniMaxPlayerTurn)
 {
-
-	if (miniMaxPlayerTurn)
+	if (tree.child) 
 	{
-		Node* max = tree.child[0];
-		for (int i = 1; i < tree.count; i++)
+		if (miniMaxPlayerTurn)
 		{
-			if (tree.child[i]->heuristic > max->heuristic)
+			Node* max = tree.child[0];
+			for (int i = 1; i < tree.count; i++)
 			{
-				max = tree.child[i];
+				if (tree.child[i]->heuristic > max->heuristic)
+				{
+					max = tree.child[i];
+				}
 			}
+			return *max;
 		}
-		return *max;
-	}
-	else
-	{
-		Node* min = tree.child[0];
-		for (int i = 1; i < tree.count; i++)
+		else
 		{
-			if (tree.child[i]->heuristic < min->heuristic)
+			Node* min = tree.child[0];
+			for (int i = 1; i < tree.count; i++)
 			{
-				min = tree.child[i];
+				if (tree.child[i]->heuristic < min->heuristic)
+				{
+					min = tree.child[i];
+				}
 			}
+			return *min;
 		}
-		return *min;
-	}
 
+	}
+	
 }
 
 void Player::changeNodeValue(Node* tree, Node& minimaxValue)
@@ -215,30 +211,34 @@ void Player::changeNodeValue(Node* tree, Node& minimaxValue)
 int Player::getMoveIndex(Node *tree , bool isGreenTurn)
 {
 	int index = 0;
-	if (isGreenTurn)
+	if (tree->child) 
 	{
-		for (int i = 1; i < tree->count; i++)
+		if (isGreenTurn)
 		{
-			if (tree->child[i]->heuristic > tree->child[index]->heuristic)
+			for (int i = 1; i < tree->count; i++)
 			{
-				index = i;
-				
-			}
-		}
-		
-	}
-	else
-	{
-		for (int i = 1; i < tree->count; i++)
-		{
-			if (tree->child[i]->heuristic < tree->child[index]->heuristic)
-			{
-				index = i;
-			}
-		}
-	
-	}
+				if (tree->child[i]->heuristic > tree->child[index]->heuristic)
+				{
+					index = i;
 
+				}
+			}
+
+		}
+		else
+		{
+			for (int i = 1; i < tree->count; i++)
+			{
+				if (tree->child[i]->heuristic < tree->child[index]->heuristic)
+				{
+					index = i;
+				}
+			}
+
+		}
+
+	}
+	
 	return index;
 
 }
