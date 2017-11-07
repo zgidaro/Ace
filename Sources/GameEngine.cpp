@@ -59,7 +59,7 @@ void GameEngine::run()
 
 		if (isGreensTurn)
 		{
-			if (true) 
+			if (isAIGreen)
 			{
 				cout << "AI will now play as Green ";
 
@@ -92,7 +92,7 @@ void GameEngine::run()
 		}
 		else
 		{
-			if(true)
+			if(!isAIGreen)
 			{
 				cout << "AI will now play as Red ";
 
