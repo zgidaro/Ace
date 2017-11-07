@@ -14,11 +14,11 @@ GameEngine::GameEngine()
 	cin >> playerColor;
 	if (playerColor == "G" || playerColor == "Green" || playerColor == "green" || playerColor == "g") 
 	{
-		isAIGreen = true;
+		isAIGreen = false;
 	}
 	else 
 	{
-		isAIGreen = false;
+		isAIGreen = true;
 	}
 	consecutiveNonAttackMoves = 0;
 	board = Board();
@@ -55,7 +55,7 @@ void GameEngine::run()
 		Board::Point pointTo;
 		Board::Move cpuMove;
 
-		cout << "e(board) = " << cpu->CalculateHeuristic(board.getGreenTokens(), board.getRedTokens()) << endl;
+		//cout << "e(board) = " << cpu->CalculateHeuristic(board.getGreenTokens(), board.getRedTokens()) << endl;
 
 		if (isGreensTurn)
 		{

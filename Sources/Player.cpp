@@ -95,10 +95,6 @@ Board::Move Player::makeMove(bool isGreensTurn)
 
 	int miniMaxPlayerTurn = isGreensTurn;
 
-	//for (int i = 0; i < tree->count; i++) {
-	//	cout<<"child move at "<<i<<" is:"<<tree->child[i]->move->from.row << "-" << tree->child[i]->move->from.col << " to: " << tree->child[i]->move->to.row << "-" << tree->child[i]->move->to.col << endl;
-	//}
-
 	//change 2 for the depth of levels -1 
 	for (int i = 0; i < 2; i++) {
 		MiniMax(tree, isGreensTurn);
@@ -107,15 +103,12 @@ Board::Move Player::makeMove(bool isGreensTurn)
 
 	//get chosen move index
 	int index = getMoveIndex(tree, isGreensTurn);
-	//Board::Move *chosenMove;
-
-	//if (tree->child[index] != NULL) {
+	
 		Board::Move *chosenMove = tree->child[index]->move;
 		cout << "chosen Move is from: " << Board::GetCharFromInt(chosenMove->from.row) << chosenMove->from.col + 1 << " to: " << Board::GetCharFromInt(chosenMove->to.row) << chosenMove->to.col + 1 << endl;
 		cout << "chosen move heuristic is: " << tree->child[index]->heuristic << endl;
-	//}
-	
 
+	
 	return (*chosenMove);
 	//make move
 	//(*board).applyMove(tree->move->from, tree->move->to);
