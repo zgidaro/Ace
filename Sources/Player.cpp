@@ -121,7 +121,7 @@ bool Player::isParentOfLeaf(Node& subTree)
 	bool ParentOfLeaf = true;
 	for (int i = 0; i < subTree.count; i++) 
 	{
-		if (subTree.child[i] != NULL) 
+		if (subTree.child) 
 		{
 			if (subTree.child[i]->child != NULL) 
 			{

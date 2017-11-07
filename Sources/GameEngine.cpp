@@ -10,15 +10,15 @@ GameEngine::GameEngine()
 	
 	string playerColor;
 	//isAIGreen = rand() % 2 > 0;
-	cout << "DO you want to be R or G ?" << endl;
+	cout << "DO you want the AI to be Red or Green ?" << endl;
 	cin >> playerColor;
 	if (playerColor == "G" || playerColor == "Green" || playerColor == "green" || playerColor == "g") 
 	{
-		isAIGreen = false;
+		isAIGreen = true;
 	}
 	else 
 	{
-		isAIGreen = true;
+		isAIGreen = false;
 	}
 	consecutiveNonAttackMoves = 0;
 	board = Board();
