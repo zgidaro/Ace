@@ -71,6 +71,10 @@ Node * Player::generateTree(Board b, int depth, bool isGreensTurn)
 * 			  - 100 x SUM(horizontal index r) from r = 1 to # red tokens on board
 * 			  - 50  x SUM(vertical index r) from r = 1 to # red tokens on board
 */
+
+/*
+ *Heuristic 2
+ * */
 int Player::CalculateHeuristic(vector<Token> green, vector<Token> red)
 {
 	int e_board = 0;
