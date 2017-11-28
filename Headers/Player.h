@@ -3,6 +3,7 @@
 
 #include "Board.h"
 #include <vector>
+#include <thread>
 
 struct Node
 {
@@ -31,6 +32,9 @@ private:
 	void pruneChildren(Node * node, int keep);
 	int max(int, int);
 	int min(int, int);
+
+	void applyMove(Board, Node *, vector<Board::Move> moves, int i, int depth, bool isGreensTurn);
+
 public:
 	Player();
 	Player(Board*);

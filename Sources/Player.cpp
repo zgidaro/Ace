@@ -45,15 +45,15 @@ Node * Player::generateTree(Board b, int depth, bool isGreensTurn)
 	if (depth > 0 && tree->count > 0)
 	{
 		tree->child = new Node *[tree->count];
+		vector<thread> threads;
 		for (int i = 0; i < tree->count; ++i)
 		{
-			board.applyMove(moves[i].from, moves[i].to);
+			threads.emplace_back(&Player::applyMove, this, board, tree, moves, i, depth - 1, isGreensTurn);
+		}
 
-			tree->child[i] = generateTree(board, depth - 1, !isGreensTurn);
-			
-			tree->child[i]->addMove(moves[i]);
-			
-			board = b;
+		for (int i = 0; i < threads.size(); ++i)
+		{
+			threads[i].thread::join();
 		}
 	}
 	else
@@ -64,6 +64,15 @@ Node * Player::generateTree(Board b, int depth, bool isGreensTurn)
 	}
 
 	return tree;
+}
+
+void Player::applyMove(Board board, Node * tree, vector<Board::Move> moves, int i, int depth, bool isGreensTurn)
+{
+	board.applyMove(moves[i].from, moves[i].to);
+
+	tree->child[i] = generateTree(board, depth - 1, !isGreensTurn);
+
+	tree->child[i]->addMove(moves[i]);
 }
 
 int Player::alphabeta(Node * node, int depth, int alpha, int beta, bool maximizingPlayer)
@@ -143,13 +152,29 @@ int Player::CalculateHeuristic(vector<Token> green, vector<Token> red)
 {
 	int e_board = 0;
 
+//	e_board = (int) green.size() * 100 - (int) red.size() * 100;
+
 	for (int i = 0; i < green.size(); ++i)
 	{
+		// Check if green is on a black square
+//		int row = green[i].getRow() + 1;
+//		int col = green[i].getColumn() + 1;
+//		if (row % 2 != 0 && col % 2 != 0)
+//		{
+//			e_board += 50;
+//		}
 		e_board += (100 * green[i].getRow()) + (50 * green[i].getColumn());
 	}
 
 	for (int i = 0; i < red.size(); ++i)
 	{
+		// Check if red is on a black square
+//		int row = red[i].getRow() + 1;
+//		int col = red[i].getColumn() + 1;
+//		if (row % 2 != 0 && col % 2 != 0)
+//		{
+//			e_board += 50;
+//		}
 		e_board -= (100 * red[i].getRow()) + (50 * red[i].getColumn());
 	}
 
@@ -161,37 +186,29 @@ Board::Move Player::makeMove(bool isGreensTurn)
 	int depth = 4;
 	Node * tree = generateTree(*board, depth, isGreensTurn);
 
-	//change 2 for the depth of levels -1 
-//	for (int i = 0; i < depth - 1; i++) {
-//		MiniMax(tree, isGreensTurn);
-//	}
-
-	int ab = alphabeta(tree, depth, INT_MIN, INT_MAX, isGreensTurn);
-
+	//TODO: Have alphabeta return the best move so we avoid using getMoveIndex (alphabeta already calculates the move anyways)
+	alphabeta(tree, depth, INT_MIN, INT_MAX, isGreensTurn);
 
 	//get chosen move index
 	int index = getMoveIndex(tree, isGreensTurn);
 	
-		Board::Move *chosenMove = tree->child[index]->move;
-		cout << "chosen Move is from: " << Board::GetCharFromInt(chosenMove->from.row) << chosenMove->from.col + 1 << " to: " << Board::GetCharFromInt(chosenMove->to.row) << chosenMove->to.col + 1 << endl;
-		cout << "chosen move heuristic is: " << tree->child[index]->heuristic << endl;
+	Board::Move *chosenMove = tree->child[index]->move;
+	cout << "chosen Move is from: " << Board::GetCharFromInt(chosenMove->from.row) << chosenMove->from.col + 1 << " to: " << Board::GetCharFromInt(chosenMove->to.row) << chosenMove->to.col + 1 << endl;
+	cout << "chosen move heuristic is: " << tree->child[index]->heuristic << endl;
 
 	
 	return (*chosenMove);
-	//make move
-	//(*board).applyMove(tree->move->from, tree->move->to);
-
 }
 
 
 bool Player::isParentOfLeaf(Node& subTree)
 {	//TODO: loop over children for certain scenarios
 	bool ParentOfLeaf = true;
-	for (int i = 0; i < subTree.count; i++) 
+	for (int i = 0; i < subTree.count; i++)
 	{
-		if (subTree.child) 
+		if (subTree.child)
 		{
-			if (subTree.child[i]->child != NULL) 
+			if (subTree.child[i]->child != NULL)
 			{
 				ParentOfLeaf = false;
 			}
@@ -205,16 +222,16 @@ void Player::MiniMax(Node *tree, bool minimaxTurn)
 	if (tree == NULL) {
 		return;
 	}
-	
+
 	if (isParentOfLeaf(*tree))
 	{
-		
+
 		//get Max or min node
 		Node& MaxorMinNode = computeMaxOrMin(*tree, minimaxTurn);
 
 		//change node value
 		changeNodeValue(tree, MaxorMinNode);
-	
+
 	}
 	else
 	{
@@ -228,7 +245,7 @@ void Player::MiniMax(Node *tree, bool minimaxTurn)
 }
 Node & Player::computeMaxOrMin(Node& tree, bool miniMaxPlayerTurn)
 {
-	if (tree.child) 
+	if (tree.child)
 	{
 		if (miniMaxPlayerTurn)
 		{
@@ -256,7 +273,7 @@ Node & Player::computeMaxOrMin(Node& tree, bool miniMaxPlayerTurn)
 		}
 
 	}
-	
+
 }
 
 void Player::changeNodeValue(Node* tree, Node& minimaxValue)
@@ -266,7 +283,7 @@ void Player::changeNodeValue(Node* tree, Node& minimaxValue)
 	tree->heuristic = minimaxValue.heuristic;
 	tree->count = minimaxValue.count;
 	tree->child = minimaxValue.child;
-	
+
 }
 
 int Player::getMoveIndex(Node *tree , bool isGreenTurn)
