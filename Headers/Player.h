@@ -26,6 +26,11 @@ private:
 	Board * board;
 
 	Node * generateTree(Board board, int depth, bool isGreensTurn);
+
+	int alphabeta(Node * node, int depth, int alpha, int beta, bool maximizingPlayer);
+	void pruneChildren(Node * node, int keep);
+	int max(int, int);
+	int min(int, int);
 public:
 	Player();
 	Player(Board*);

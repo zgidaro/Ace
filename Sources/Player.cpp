@@ -60,10 +60,78 @@ Node * Player::generateTree(Board b, int depth, bool isGreensTurn)
 	{
 		tree->heuristic = CalculateHeuristic(board.getGreenTokens(), board.getRedTokens());
 		tree->child = nullptr;
+		tree->count = 0;
 	}
 
 	return tree;
 }
+
+int Player::alphabeta(Node * node, int depth, int alpha, int beta, bool maximizingPlayer)
+{
+	int v;
+
+	if (depth == 0 || node->count == 0)
+		return node->heuristic;
+
+	if (maximizingPlayer)
+	{
+		v = INT_MIN;
+		for (int i = 0; i < node->count; i++)
+		{
+			v = max(v, alphabeta(node->child[i], depth - 1, alpha, beta, false));
+			alpha = max(alpha, v);
+			node->heuristic = alpha;
+			if (beta <= alpha)
+			{
+				pruneChildren(node, i);
+				break;
+			}
+		}
+		return v;
+	}
+	else
+	{
+		v = INT_MAX;
+		for (int i = 0; i < node->count; i++)
+		{
+			v = min(v, alphabeta(node->child[i], depth - 1, alpha, beta, true));
+			beta = min(beta, v);
+			node->heuristic = beta;
+			if (beta <= alpha)
+			{
+				pruneChildren(node, i);
+				break;
+			}
+		}
+		return v;
+	}
+}
+
+void Player::pruneChildren(Node * node, int keep)
+{
+	int del = keep + 1;
+	if (node->count >= del)
+	{
+		int count = 0;
+		for (int i = del; i < node->count; i++)
+		{
+			node->child[i] = nullptr;
+			count++;
+		}
+		node->count -= count;
+	}
+}
+
+int Player::max(int i1, int i2)
+{
+	return i1 > i2 ? i1 : i2;
+}
+
+int Player::min(int i1, int i2)
+{
+	return i1 < i2 ? i1 : i2;
+}
+
 
 /*
 * e(board) = 100 x SUM(horizontal index g) from g = 1 to # green tokens on board
@@ -90,15 +158,15 @@ int Player::CalculateHeuristic(vector<Token> green, vector<Token> red)
 
 Board::Move Player::makeMove(bool isGreensTurn)
 {
-	Node * tree = generateTree(*board, 3, isGreensTurn);
-
-
-	int miniMaxPlayerTurn = isGreensTurn;
+	int depth = 4;
+	Node * tree = generateTree(*board, depth, isGreensTurn);
 
 	//change 2 for the depth of levels -1 
-	for (int i = 0; i < 2; i++) {
-		MiniMax(tree, isGreensTurn);
-	}
+//	for (int i = 0; i < depth - 1; i++) {
+//		MiniMax(tree, isGreensTurn);
+//	}
+
+	int ab = alphabeta(tree, depth, INT_MIN, INT_MAX, isGreensTurn);
 
 
 	//get chosen move index
