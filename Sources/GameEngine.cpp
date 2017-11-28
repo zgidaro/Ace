@@ -55,6 +55,8 @@ void GameEngine::run()
 		Board::Point pointTo;
 		Board::Move cpuMove;
 
+		auto start = std::chrono::high_resolution_clock::now();
+
 		//cout << "e(board) = " << cpu->CalculateHeuristic(board.getGreenTokens(), board.getRedTokens()) << endl;
 
 		if (isGreensTurn)
@@ -131,6 +133,11 @@ void GameEngine::run()
 		isGreensTurn = !isGreensTurn;
 
 		board.print();
+
+		auto finish = std::chrono::high_resolution_clock::now();
+
+		auto microseconds = std::chrono::duration_cast<std::chrono::microseconds>(finish-start);
+		cout << microseconds.count()/1000000.0 << "s" << endl;
 	}
 
 	announceWinner(winner);
