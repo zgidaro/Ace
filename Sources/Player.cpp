@@ -58,7 +58,7 @@ Node * Player::generateTree(Board b, int depth, bool isGreensTurn)
 	}
 	else
 	{
-		tree->heuristic = CalculateHeuristic(board.getGreenTokens(), board.getRedTokens());
+		tree->heuristic = CalculateHeuristic(board.getGreenTokens(), board.getRedTokens(), board);
 		tree->child = nullptr;
 		tree->count = 0;
 	}
@@ -73,6 +73,61 @@ void Player::applyMove(Board board, Node * tree, vector<Board::Move> moves, int 
 	tree->child[i] = generateTree(board, depth - 1, !isGreensTurn);
 
 	tree->child[i]->addMove(moves[i]);
+}
+
+pair<int, Board::Move*> Player::alphabeta2(Node * node, int depth, int alpha, int beta, bool maximizingPlayer)
+{
+	pair<int, Board::Move*> v;
+//	int v;
+
+	if (depth == 0 || node->count == 0)
+	{
+		pair<int, Board::Move*> p;
+		p.first = node->heuristic;
+		p.second = node->move;
+		return p;
+	}
+
+	if (maximizingPlayer)
+	{
+		v.first = INT_MIN;
+		pair<int, Board::Move*> v2;
+		for (int i = 0; i < node->count; i++)
+		{
+			v2 = alphabeta2(node->child[i], depth - 1, alpha, beta, false);
+			v2.first = max(v.first, v2.first);
+			alpha = max(alpha, v2.first);
+			v2.first = alpha;
+			v2.second = node->move;
+			node->heuristic = alpha;
+			if (beta <= alpha)
+			{
+				pruneChildren(node, i);
+				break;
+			}
+		}
+		return v2;
+	}
+	else
+	{
+		v.first = INT_MAX;
+		pair<int, Board::Move*> v3;
+		for (int i = 0; i < node->count; i++)
+		{
+			v3 = alphabeta2(node->child[i], depth - 1, alpha, beta, true);
+			v3.first = min(v.first, v3.first);
+			beta = min(beta, v3.first);
+			v3.first = beta;
+			v3.second = node->move;
+			node->heuristic = beta;
+			if (beta <= alpha)
+			{
+				pruneChildren(node, i);
+				break;
+			}
+		}
+		return v3;
+	}
 }
 
 int Player::alphabeta(Node * node, int depth, int alpha, int beta, bool maximizingPlayer)
@@ -148,37 +203,61 @@ int Player::min(int i1, int i2)
 * 			  - 100 x SUM(horizontal index r) from r = 1 to # red tokens on board
 * 			  - 50  x SUM(vertical index r) from r = 1 to # red tokens on board
 */
-int Player::CalculateHeuristic(vector<Token> green, vector<Token> red)
+int Player::CalculateHeuristic(vector<Token> green, vector<Token> red, Board board)
 {
 	int e_board = 0;
 
-//	e_board = (int) green.size() * 100 - (int) red.size() * 100;
+	e_board = (int) green.size() * 50 - (int) red.size() * 50;
 
+	e_board += (int) board.nextMoves(green).size() * 100 - (int) board.nextMoves(red).size() * 100;
+
+	int g_black = 0;
 	for (int i = 0; i < green.size(); ++i)
 	{
 		// Check if green is on a black square
-//		int row = green[i].getRow() + 1;
-//		int col = green[i].getColumn() + 1;
-//		if (row % 2 != 0 && col % 2 != 0)
-//		{
-//			e_board += 50;
-//		}
-		e_board += (100 * green[i].getRow()) + (50 * green[i].getColumn());
+		int row = green[i].getRow() + 1;
+		int col = green[i].getColumn() + 1;
+		if (row % 2 != 0 && col % 2 != 0)
+		{
+			e_board += 25;
+			g_black++;
+		}
+		if (isCorner(row, col))
+		{
+			e_board -= 75;
+		}
+		e_board += (100 * (green[i].getRow()+1)) + (50 * (green[i].getColumn()+1));
 	}
 
+	e_board -= (green.size() - g_black) * 10;
+
+	int r_black = 0;
 	for (int i = 0; i < red.size(); ++i)
 	{
 		// Check if red is on a black square
-//		int row = red[i].getRow() + 1;
-//		int col = red[i].getColumn() + 1;
-//		if (row % 2 != 0 && col % 2 != 0)
-//		{
-//			e_board += 50;
-//		}
-		e_board -= (100 * red[i].getRow()) + (50 * red[i].getColumn());
+		int row = red[i].getRow() + 1;
+		int col = red[i].getColumn() + 1;
+		if (row % 2 != 0 && col % 2 != 0)
+		{
+			e_board -= 25;
+			r_black++;
+		}
+		if (isCorner(row, col))
+		{
+			e_board += 75;
+		}
+		e_board -= (100 * (red[i].getRow() + 1)) + (50 * (red[i].getColumn() + 1));
 	}
 
+	e_board += (red.size() - r_black) * 10;
+
 	return e_board;
+}
+
+bool Player::isCorner(int row, int col)
+{
+	return (row == 1 && col == 1) || (row == 1 && col == 9)
+		   || (row == 5 && col == 1) || (row == 5 && col == 9);
 }
 
 Board::Move Player::makeMove(bool isGreensTurn)
@@ -188,6 +267,7 @@ Board::Move Player::makeMove(bool isGreensTurn)
 
 	//TODO: Have alphabeta return the best move so we avoid using getMoveIndex (alphabeta already calculates the move anyways)
 	alphabeta(tree, depth, INT_MIN, INT_MAX, isGreensTurn);
+//	pair<int, Board::Move*> result = alphabeta2(tree, depth, INT_MIN, INT_MAX, isGreensTurn);
 
 	//get chosen move index
 	int index = getMoveIndex(tree, isGreensTurn);
@@ -273,7 +353,7 @@ Node & Player::computeMaxOrMin(Node& tree, bool miniMaxPlayerTurn)
 		}
 
 	}
-
+	return tree;
 }
 
 void Player::changeNodeValue(Node* tree, Node& minimaxValue)

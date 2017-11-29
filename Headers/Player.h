@@ -29,6 +29,7 @@ private:
 	Node * generateTree(Board board, int depth, bool isGreensTurn);
 
 	int alphabeta(Node * node, int depth, int alpha, int beta, bool maximizingPlayer);
+	pair<int, Board::Move*> alphabeta2(Node * node, int depth, int alpha, int beta, bool maximizingPlayer);
 	void pruneChildren(Node * node, int keep);
 	int max(int, int);
 	int min(int, int);
@@ -52,7 +53,8 @@ public:
 	void MiniMax(Node*, bool);
 	int getMoveIndex(Node*, bool);
 
-	static int CalculateHeuristic(vector<Token> green, vector<Token> red);
+	static int CalculateHeuristic(vector<Token> green, vector<Token> red, Board board);
+	static bool isCorner(int row, int col);
 };
 
 
