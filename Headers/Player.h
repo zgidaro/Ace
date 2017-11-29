@@ -53,7 +53,7 @@ public:
 	void MiniMax(Node*, bool);
 	int getMoveIndex(Node*, bool);
 
-	static int CalculateHeuristic(vector<Token> green, vector<Token> red, Board board);
+	static int CalculateHeuristic(vector<Token> green, vector<Token> red, Board board, bool turn);
 	static bool isCorner(int row, int col);
 };
 

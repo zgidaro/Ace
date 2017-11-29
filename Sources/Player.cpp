@@ -69,7 +69,7 @@ Node * Player::generateTree(Board b, int depth, bool isGreensTurn)
 	}
 	else
 	{
-		tree->heuristic = CalculateHeuristic(board.getGreenTokens(), board.getRedTokens(), board);
+		tree->heuristic = CalculateHeuristic(board.getGreenTokens(), board.getRedTokens(), board, isGreensTurn);
 		tree->child = nullptr;
 		tree->count = 0;
 	}
@@ -212,13 +212,23 @@ int Player::min(int i1, int i2)
 * 			  - 100 x SUM(horizontal index r) from r = 1 to # red tokens on board
 * 			  - 50  x SUM(vertical index r) from r = 1 to # red tokens on board
 */
-int Player::CalculateHeuristic(vector<Token> green, vector<Token> red, Board board)
+int Player::CalculateHeuristic(vector<Token> green, vector<Token> red, Board board, bool isGreenTurn)
 {
 	int e_board = 0;
 
-	e_board = (int) green.size() * 50 - (int) red.size() * 50;
+	e_board = (int) green.size() * 200 - (int) red.size() * 200;
 
-	e_board += (int) board.nextMoves(green).size() * 100 - (int) board.nextMoves(red).size() * 100;
+	if (isGreenTurn)
+	{
+		e_board -= (int)board.nextMoves(red).size() * 100;
+	}
+	else
+	{
+		e_board += (int)board.nextMoves(green).size() * 100;
+	}
+
+	//e_board += (int) board.nextMoves(green).size() * 100 - (int) board.nextMoves(red).size() * 100;
+	//e_board += - (int)board.nextMoves(red).size() * 100;
 
 	int g_black = 0;
 	for (int i = 0; i < green.size(); ++i)
@@ -228,18 +238,18 @@ int Player::CalculateHeuristic(vector<Token> green, vector<Token> red, Board boa
 		int col = green[i].getColumn() + 1;
 		if (row % 2 != 0 && col % 2 != 0)
 		{
-			e_board += 25;
+			e_board += 75;
 			g_black++;
 		}
 		if (isCorner(row, col))
 		{
-			e_board -= 75;
+			e_board -= 25;
 		}
 		e_board += (100 * (green[i].getRow()+1)) + (50 * (green[i].getColumn()+1));
 	}
 
-	e_board -= (green.size() - g_black) * 10;
-
+	//e_board -= (green.size() - g_black) * 10;
+	// e_board += (green.size() - g_black) * 10;
 	int r_black = 0;
 	for (int i = 0; i < red.size(); ++i)
 	{
@@ -248,12 +258,12 @@ int Player::CalculateHeuristic(vector<Token> green, vector<Token> red, Board boa
 		int col = red[i].getColumn() + 1;
 		if (row % 2 != 0 && col % 2 != 0)
 		{
-			e_board -= 25;
+			e_board -= 75;
 			r_black++;
 		}
 		if (isCorner(row, col))
 		{
-			e_board += 75;
+			e_board += 25;
 		}
 		e_board -= (100 * (red[i].getRow() + 1)) + (50 * (red[i].getColumn() + 1));
 	}
@@ -268,6 +278,11 @@ bool Player::isCorner(int row, int col)
 	return (row == 1 && col == 1) || (row == 1 && col == 9)
 		   || (row == 5 && col == 1) || (row == 5 && col == 9);
 }
+
+//bool Player::isEmptyCell(int row, int col)
+//{
+//
+//}
 
 Board::Move Player::makeMove(bool isGreensTurn)
 {
