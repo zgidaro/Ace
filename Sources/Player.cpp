@@ -216,47 +216,45 @@ int Player::CalculateHeuristic(vector<Token> green, vector<Token> red, Board boa
 {
 	int e_board = 0;
 
-	e_board = (int) green.size() * 50 - (int) red.size() * 100;
+	e_board = (int) green.size() * 22 - (int) red.size() * 22;
 
-	e_board += (int) board.nextMoves(green).size() * 100 - (int) board.nextMoves(red).size() * 100;
+	e_board += (int) board.nextMoves(green).size() * 4 - (int) board.nextMoves(red).size() * 4;
 
 	int g_black = 0;
 	for (int i = 0; i < green.size(); ++i)
 	{
-		e_board += green[i].getDeleted() * 150;
-//		cout << "green deleted " << green[i].getDeleted() << endl;
+		e_board += green[i].getDeleted() * 7;
 		// Check if green is on a black square
 		int row = green[i].getRow() + 1;
 		int col = green[i].getColumn() + 1;
 		if (row % 2 != 0 && col % 2 != 0)
 		{
-			e_board += 75;
+			e_board += 23;
 			g_black++;
 		}
 		if (isCorner(row, col))
-		{
-			e_board -= 25;
-		}
+			e_board -= 4;
+		if (isEdge(row, col))
+			e_board -= 24;
 //		e_board += (100 * (green[i].getRow()+1)) + (50 * (green[i].getColumn()+1));
 	}
 
 	int r_black = 0;
 	for (int i = 0; i < red.size(); ++i)
 	{
-		e_board -= red[i].getDeleted() * 150;
-//		cout << "red deleted " << red[i].getDeleted() << endl;
+		e_board -= red[i].getDeleted() * 7;
 		// Check if red is on a black square
 		int row = red[i].getRow() + 1;
 		int col = red[i].getColumn() + 1;
 		if (row % 2 != 0 && col % 2 != 0)
 		{
-			e_board -= 75;
+			e_board -= 23;
 			r_black++;
 		}
 		if (isCorner(row, col))
-		{
-			e_board += 25;
-		}
+			e_board += 4;
+		if (isEdge(row, col))
+			e_board += 24;
 //		e_board -= (100 * (red[i].getRow() + 1)) + (50 * (red[i].getColumn() + 1));
 	}
 
@@ -269,9 +267,18 @@ bool Player::isCorner(int row, int col)
 		   || (row == 5 && col == 1) || (row == 5 && col == 9);
 }
 
+bool Player::isEdge(int row, int col)
+{
+	return (row == 1) || (row == 5) || (col == 1) || (col == 9);
+}
+
 Board::Move Player::makeMove(bool isGreensTurn)
 {
 	int depth = 3;
+	if (board->getRedTokens().size() < 3 || board->getGreenTokens().size() < 3)
+	{
+		depth = min((int) board->getRedTokens().size(), (int) board->getGreenTokens().size());
+	}
 	Node * tree = generateTree(*board, depth, isGreensTurn);
 
 	//TODO: Have alphabeta return the best move so we avoid using getMoveIndex (alphabeta already calculates the move anyways)

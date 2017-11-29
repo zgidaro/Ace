@@ -55,6 +55,7 @@ public:
 
 	static int CalculateHeuristic(vector<Token> green, vector<Token> red, Board board);
 	static bool isCorner(int row, int col);
+	static bool isEdge(int row, int col);
 };
 
 
