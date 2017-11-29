@@ -216,49 +216,49 @@ int Player::CalculateHeuristic(vector<Token> green, vector<Token> red, Board boa
 {
 	int e_board = 0;
 
-	e_board = (int) green.size() * 50 - (int) red.size() * 50;
+	e_board = (int) green.size() * 50 - (int) red.size() * 100;
 
 	e_board += (int) board.nextMoves(green).size() * 100 - (int) board.nextMoves(red).size() * 100;
 
 	int g_black = 0;
 	for (int i = 0; i < green.size(); ++i)
 	{
+		e_board += green[i].getDeleted() * 150;
+//		cout << "green deleted " << green[i].getDeleted() << endl;
 		// Check if green is on a black square
 		int row = green[i].getRow() + 1;
 		int col = green[i].getColumn() + 1;
 		if (row % 2 != 0 && col % 2 != 0)
 		{
-			e_board += 25;
+			e_board += 75;
 			g_black++;
 		}
 		if (isCorner(row, col))
 		{
-			e_board -= 75;
+			e_board -= 25;
 		}
-		e_board += (100 * (green[i].getRow()+1)) + (50 * (green[i].getColumn()+1));
+//		e_board += (100 * (green[i].getRow()+1)) + (50 * (green[i].getColumn()+1));
 	}
-
-	e_board -= (green.size() - g_black) * 10;
 
 	int r_black = 0;
 	for (int i = 0; i < red.size(); ++i)
 	{
+		e_board -= red[i].getDeleted() * 150;
+//		cout << "red deleted " << red[i].getDeleted() << endl;
 		// Check if red is on a black square
 		int row = red[i].getRow() + 1;
 		int col = red[i].getColumn() + 1;
 		if (row % 2 != 0 && col % 2 != 0)
 		{
-			e_board -= 25;
+			e_board -= 75;
 			r_black++;
 		}
 		if (isCorner(row, col))
 		{
-			e_board += 75;
+			e_board += 25;
 		}
-		e_board -= (100 * (red[i].getRow() + 1)) + (50 * (red[i].getColumn() + 1));
+//		e_board -= (100 * (red[i].getRow() + 1)) + (50 * (red[i].getColumn() + 1));
 	}
-
-	e_board += (red.size() - r_black) * 10;
 
 	return e_board;
 }
@@ -282,7 +282,7 @@ Board::Move Player::makeMove(bool isGreensTurn)
 	int index = getMoveIndex(tree, isGreensTurn);
 	
 	Board::Move *chosenMove = tree->child[index]->move;
-	cout << "chosen Move is from: " << Board::GetCharFromInt(chosenMove->from.row) << chosenMove->from.col + 1 << " to: " << Board::GetCharFromInt(chosenMove->to.row) << chosenMove->to.col + 1 << endl;
+	cout << "chosen Move is " << Board::GetCharFromInt(chosenMove->from.row) << chosenMove->from.col + 1 << " " << Board::GetCharFromInt(chosenMove->to.row) << chosenMove->to.col + 1 << endl;
 	cout << "chosen move heuristic is: " << tree->child[index]->heuristic << endl;
 
 	

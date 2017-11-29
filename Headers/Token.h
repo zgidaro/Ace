@@ -15,6 +15,7 @@ private:
     int column;
     int row;
     char colour;
+	int deleted;
 
 
 public:
@@ -25,10 +26,12 @@ public:
     int getColumn();
     int getRow();
     char getColour();
+	int getDeleted();
 
     void setColumn(int);
     void setRow(int);
     void setColour(char);
+	void setDeleted(int);
 };
 
 

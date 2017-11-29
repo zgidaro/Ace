@@ -72,6 +72,8 @@ private:
 
 	bool isPointValid(int, int);
 	bool isAttacking(Token *, Token *);
+
+	void setTokenDeleted(Token *, int);
 };
 
 

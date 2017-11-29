@@ -258,7 +258,10 @@ bool Board::applyForwardAttack(Token * attacking, Board::Point pointFrom, Board:
 				}
 
 				if (deleted > 0)
+				{
+					setTokenDeleted(attacking, deleted);
 					return true;
+				}
 			}
 		}
 
@@ -284,7 +287,10 @@ bool Board::applyForwardAttack(Token * attacking, Board::Point pointFrom, Board:
 				}
 
 				if (deleted > 0)
+				{
+					setTokenDeleted(attacking, deleted);
 					return true;
+				}
 			}
 		}
 
@@ -310,7 +316,10 @@ bool Board::applyForwardAttack(Token * attacking, Board::Point pointFrom, Board:
 				}
 
 				if (deleted > 0)
+				{
+					setTokenDeleted(attacking, deleted);
 					return true;
+				}
 			}
 		}
 
@@ -336,7 +345,10 @@ bool Board::applyForwardAttack(Token * attacking, Board::Point pointFrom, Board:
 				}
 
 				if (deleted > 0)
+				{
+					setTokenDeleted(attacking, deleted);
 					return true;
+				}
 			}
 		}
 	}
@@ -357,7 +369,10 @@ bool Board::applyForwardAttack(Token * attacking, Board::Point pointFrom, Board:
 				}
 
 				if (deleted > 0)
+				{
+					setTokenDeleted(attacking, deleted);
 					return true;
+				}
 			}
 		}
 
@@ -376,7 +391,10 @@ bool Board::applyForwardAttack(Token * attacking, Board::Point pointFrom, Board:
 				}
 
 				if (deleted > 0)
+				{
+					setTokenDeleted(attacking, deleted);
 					return true;
+				}
 			}
 		}
 
@@ -395,7 +413,10 @@ bool Board::applyForwardAttack(Token * attacking, Board::Point pointFrom, Board:
 				}
 
 				if (deleted > 0)
+				{
+					setTokenDeleted(attacking, deleted);
 					return true;
+				}
 			}
 		}
 
@@ -414,7 +435,10 @@ bool Board::applyForwardAttack(Token * attacking, Board::Point pointFrom, Board:
 				}
 
 				if (deleted > 0)
+				{
+					setTokenDeleted(attacking, deleted);
 					return true;
+				}
 			}
 		}
 	}
@@ -451,7 +475,10 @@ bool Board::applyBackwardAttack(Token * attacking, Board::Point pointFrom, Board
 				}
 
 				if (deleted > 0)
+				{
+					setTokenDeleted(attacking, deleted);
 					return true;
+				}
 			}
 		}
 
@@ -477,7 +504,10 @@ bool Board::applyBackwardAttack(Token * attacking, Board::Point pointFrom, Board
 				}
 
 				if (deleted > 0)
+				{
+					setTokenDeleted(attacking, deleted);
 					return true;
+				}
 			}
 		}
 
@@ -503,7 +533,10 @@ bool Board::applyBackwardAttack(Token * attacking, Board::Point pointFrom, Board
 				}
 
 				if (deleted > 0)
+				{
+					setTokenDeleted(attacking, deleted);
 					return true;
+				}
 			}
 		}
 
@@ -529,7 +562,10 @@ bool Board::applyBackwardAttack(Token * attacking, Board::Point pointFrom, Board
 				}
 
 				if (deleted > 0)
+				{
+					setTokenDeleted(attacking, deleted);
 					return true;
+				}
 			}
 		}
 	}
@@ -550,7 +586,10 @@ bool Board::applyBackwardAttack(Token * attacking, Board::Point pointFrom, Board
 				}
 
 				if (deleted > 0)
+				{
+					setTokenDeleted(attacking, deleted);
 					return true;
+				}
 			}
 		}
 
@@ -569,7 +608,10 @@ bool Board::applyBackwardAttack(Token * attacking, Board::Point pointFrom, Board
 				}
 
 				if (deleted > 0)
+				{
+					setTokenDeleted(attacking, deleted);
 					return true;
+				}
 			}
 		}
 
@@ -588,7 +630,10 @@ bool Board::applyBackwardAttack(Token * attacking, Board::Point pointFrom, Board
 				}
 
 				if (deleted > 0)
+				{
+					setTokenDeleted(attacking, deleted);
 					return true;
+				}
 			}
 		}
 
@@ -607,11 +652,15 @@ bool Board::applyBackwardAttack(Token * attacking, Board::Point pointFrom, Board
 				}
 
 				if (deleted > 0)
+				{
+					setTokenDeleted(attacking, deleted);
 					return true;
+				}
 			}
 		}
 	}
 
+	setTokenDeleted(attacking, 0);
 	return false;
 }
 
@@ -632,6 +681,32 @@ bool Board::verifyAttackAndDeleteToken(Token * attacking, int row, int col)
 	{
 		board[row][col].token = nullptr;
 		return deleteRedToken(row, col);
+	}
+}
+
+void Board::setTokenDeleted(Token * t, int deleted)
+{
+	if (t->getColour() == 'G' || t->getColour() == 'g')
+	{
+		for (int j = 0; j < tokenGreen.size(); j++)
+		{
+			Token &token = tokenGreen[j];
+			if ((token.getRow() == t->getRow()) && (token.getColumn() == t->getColumn()))
+			{
+				tokenGreen[j].setDeleted(deleted);
+			}
+		}
+	}
+	else
+	{
+		for (int j = 0; j < tokenRed.size(); j++)
+		{
+			Token &token = tokenRed[j];
+			if ((token.getRow() == t->getRow()) && (token.getColumn() == t->getColumn()))
+			{
+				tokenRed[j].setDeleted(deleted);
+			}
+		}
 	}
 }
 
