@@ -48,7 +48,18 @@ Node * Player::generateTree(Board b, int depth, bool isGreensTurn)
 		vector<thread> threads;
 		for (int i = 0; i < tree->count; ++i)
 		{
-			threads.emplace_back(&Player::applyMove, this, board, tree, moves, i, depth - 1, isGreensTurn);
+			if (depth >= 3)
+				threads.emplace_back(&Player::applyMove, this, board, tree, moves, i, depth, isGreensTurn);
+			else
+			{
+				board.applyMove(moves[i].from, moves[i].to);
+
+				tree->child[i] = generateTree(board, depth - 1, !isGreensTurn);
+
+				tree->child[i]->addMove(moves[i]);
+
+				board = b;
+			}
 		}
 
 		for (int i = 0; i < threads.size(); ++i)
@@ -91,14 +102,12 @@ pair<int, Board::Move*> Player::alphabeta2(Node * node, int depth, int alpha, in
 	if (maximizingPlayer)
 	{
 		v.first = INT_MIN;
-		pair<int, Board::Move*> v2;
 		for (int i = 0; i < node->count; i++)
 		{
+			pair<int, Board::Move*> v2;
 			v2 = alphabeta2(node->child[i], depth - 1, alpha, beta, false);
-			v2.first = max(v.first, v2.first);
-			alpha = max(alpha, v2.first);
-			v2.first = alpha;
-			v2.second = node->move;
+			v.first = max(v.first, v2.first);
+			alpha = max(alpha, v.first);
 			node->heuristic = alpha;
 			if (beta <= alpha)
 			{
@@ -106,19 +115,18 @@ pair<int, Board::Move*> Player::alphabeta2(Node * node, int depth, int alpha, in
 				break;
 			}
 		}
-		return v2;
+//		v.second = node->move;
+		return v;
 	}
 	else
 	{
 		v.first = INT_MAX;
-		pair<int, Board::Move*> v3;
 		for (int i = 0; i < node->count; i++)
 		{
+			pair<int, Board::Move*> v3;
 			v3 = alphabeta2(node->child[i], depth - 1, alpha, beta, true);
-			v3.first = min(v.first, v3.first);
-			beta = min(beta, v3.first);
-			v3.first = beta;
-			v3.second = node->move;
+			v.first = min(v.first, v3.first);
+			beta = min(beta, v.first);
 			node->heuristic = beta;
 			if (beta <= alpha)
 			{
@@ -126,7 +134,8 @@ pair<int, Board::Move*> Player::alphabeta2(Node * node, int depth, int alpha, in
 				break;
 			}
 		}
-		return v3;
+//		v.second = node->move;
+		return v;
 	}
 }
 
@@ -262,7 +271,7 @@ bool Player::isCorner(int row, int col)
 
 Board::Move Player::makeMove(bool isGreensTurn)
 {
-	int depth = 4;
+	int depth = 3;
 	Node * tree = generateTree(*board, depth, isGreensTurn);
 
 	//TODO: Have alphabeta return the best move so we avoid using getMoveIndex (alphabeta already calculates the move anyways)
