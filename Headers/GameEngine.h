@@ -32,6 +32,7 @@ private:
 	int consecutiveNonAttackMoves;
 	bool isGreensTurn;
 	bool isAIGreen;
+	bool isHumanVsAi;
 };
 
 

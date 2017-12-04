@@ -6,19 +6,37 @@
 
 GameEngine::GameEngine()
 {
-	isGreensTurn = true; 
+	isGreensTurn = true;
+	isHumanVsAi = false;
 	
 	string playerColor;
-	//isAIGreen = rand() % 2 > 0;
-	cout << "DO you want the AI to be Red or Green ?" << endl;
-	cin >> playerColor;
-	if (playerColor == "G" || playerColor == "Green" || playerColor == "green" || playerColor == "g") 
+
+	cout << "Welcome to Bonzee!" << endl << endl;
+
+	cout << "Select a playing mode:" << endl;
+	cout << "1. Human vs. Human" << endl;
+	cout << "2. Human vs. AI" << endl;
+
+	int n;
+	cin >> n;
+
+	if (n == 1)
 	{
-		isAIGreen = true;
+		isHumanVsAi = false;
 	}
-	else 
+	else if (n == 2)
 	{
-		isAIGreen = false;
+		cout << "DO you want the AI to be Red or Green ?" << endl;
+		cin >> playerColor;
+		if (playerColor == "G" || playerColor == "Green" || playerColor == "green" || playerColor == "g")
+		{
+			isAIGreen = true;
+		}
+		else
+		{
+			isAIGreen = false;
+		}
+		isHumanVsAi = true;
 	}
 	consecutiveNonAttackMoves = 0;
 	board = Board();
@@ -30,16 +48,15 @@ void GameEngine::run()
 
 	cpu = new Player(&board);
 
-	cout << "Welcome to Bonzee!" << endl << endl;
-
-	if (isAIGreen)
+	if (isHumanVsAi)
 	{
-		cout << "Green is playing as the CPU" << endl;
-	}
-
-	else
-	{
-		cout << "Red is playing as the CPU" << endl;
+		if (isAIGreen)
+		{
+			cout << "Green is playing as the CPU" << endl;
+		} else
+		{
+			cout << "Red is playing as the CPU" << endl;
+		}
 	}
 
 
@@ -61,7 +78,7 @@ void GameEngine::run()
 
 		if (isGreensTurn)
 		{
-			if (isAIGreen)
+			if (isHumanVsAi && isAIGreen)
 			{
 				cout << "AI will now play as Green ";
 
@@ -94,7 +111,7 @@ void GameEngine::run()
 		}
 		else
 		{
-			if(!isAIGreen)
+			if(isHumanVsAi && !isAIGreen)
 			{
 				cout << "AI will now play as Red ";
 
